@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "ctl:fibre"
+    }
+  },
+  "pattern": [
+    "aaa",
+    "a a",
+    "aaa"
+  ],
+  "result": {
+    "item": "ctl:rope"
+  },
+  "show_notification": true
+}

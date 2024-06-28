@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "minecraft:stick"
+    }
+  },
+  "pattern": [
+    "aaa",
+    "a a",
+    "a a"
+  ],
+  "result":{
+    "item": "ctl:hayrack"
+  }
+}

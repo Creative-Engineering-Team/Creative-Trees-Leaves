@@ -27,5 +27,7 @@ public class ItemInit {
             new Item.Properties()));
     public static final Supplier<Item> LEAF = ITEMS.register("leaf",()->new LeafItem(new Item.Properties()));
     public static final Supplier<Item> DRY_LEAF = ITEMS.register("dry_leaf",()->new DryLeafItem(new Item.Properties()));
+    public static final Supplier<Item> FIBRE = ITEMS.register("fibre",()->new fibreItem(new Item.Properties()));
+    public static final Supplier<Item> ROPE = ITEMS.register("rope",()->new ropeItem(new Item.Properties()));
 }
 

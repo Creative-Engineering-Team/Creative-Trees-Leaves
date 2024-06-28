@@ -15,33 +15,34 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
-public class hayrackBlock extends BaseEntityBlock implements SimpleWaterloggedBlock {
+public class hayrackBlock extends BaseEntityBlock {
     //public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty HaveLeaf = BooleanProperty.create("have_leaf");
     public static final BooleanProperty LeafOK = BooleanProperty.create("leaf_ok");
-    public static final IntegerProperty EndTime = IntegerProperty.create("start_time",0,200);
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    //public static final BooleanProperty EndTimet = BooleanProperty.create("start_time");
+    //public static final IntegerProperty StartTime = IntegerProperty.create("start_timet",0,70);
+    //public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    //public static final IntegerProperty hayrack_gets_num = IntegerProperty.create("hayrack_gets_num",0,100);
     protected hayrackBlock() {
         super(Properties.of().strength(5f).noOcclusion());
         this.registerDefaultState(this.defaultBlockState().setValue(HaveLeaf,false));
         this.registerDefaultState(this.defaultBlockState().setValue(LeafOK,false));
-        this.registerDefaultState(this.defaultBlockState().setValue(EndTime,0));
+        //this.registerDefaultState(this.defaultBlockState().setValue(StartTime,0));
+        //this.registerDefaultState(this.defaultBlockState().setValue(EndTimet,true));
     }
 
-    public BlockState rotate(BlockState p_54125_, Rotation p_54126_) {
-        return p_54125_.setValue(FACING, p_54126_.rotate(p_54125_.getValue(FACING)));
-    }
-
-    public BlockState mirror(BlockState p_54122_, Mirror p_54123_) {
-        return p_54122_.rotate(p_54123_.getRotation(p_54122_.getValue(FACING)));
-    }
+//    public BlockState rotate(BlockState p_54125_, Rotation p_54126_) {
+//        return p_54125_.setValue(FACING, p_54126_.rotate(p_54125_.getValue(FACING)));
+//    }
+//
+//    public BlockState mirror(BlockState p_54122_, Mirror p_54123_) {
+//        return p_54122_.rotate(p_54123_.getRotation(p_54122_.getValue(FACING)));
+//    }
 
 //    @Override
 //    public void randomTick(BlockState p_222954_, ServerLevel p_222955_, BlockPos p_222956_, RandomSource p_222957_) {
@@ -75,17 +76,18 @@ public class hayrackBlock extends BaseEntityBlock implements SimpleWaterloggedBl
         }
         if (p_60503_.getValue(HaveLeaf) && p_60503_.getValue(LeafOK)){
             if (!p_60506_.getMainHandItem().is(Items.AIR)) return InteractionResult.PASS;
+            var hayrackBlockEntity = (com.xiaoliua.ctl.Blocks.hayrackBlockEntity)p_60504_.getBlockEntity(p_60505_);
             //p_60506_.setItemSlot(EquipmentSlot.MAINHAND,new ItemStack(ItemInit.DRY_LEAF.get(),64));
-            p_60506_.setItemSlot(EquipmentSlot.MAINHAND,new ItemStack(ItemInit.DRY_LEAF.get(),64));
+            p_60506_.setItemSlot(EquipmentSlot.MAINHAND,new ItemStack(ItemInit.DRY_LEAF.get(),hayrackBlockEntity.getLeafNum()));
             p_60504_.setBlock(p_60505_,p_60503_.cycle(HaveLeaf).cycle(LeafOK),3);
             //p_60504_.setBlock(p_60505_,p_60503_.cycle(LeafOK),3);
             return InteractionResult.SUCCESS;
-        }else if (p_60506_.getMainHandItem().getItem() == ItemInit.LEAF.get() && p_60506_.getMainHandItem().getCount()==64){
+        }else if (p_60506_.getMainHandItem().getItem() == ItemInit.LEAF.get()){
             //p_60506_.sendSystemMessage(Component.nullToEmpty("ttt"));
-            p_60506_.setItemSlot(EquipmentSlot.MAINHAND,new ItemStack(Items.AIR));
-            p_60504_.setBlock(p_60505_,p_60503_.cycle(HaveLeaf).setValue(EndTime, 100),3);
             var hayrackBlockEntity = (com.xiaoliua.ctl.Blocks.hayrackBlockEntity)p_60504_.getBlockEntity(p_60505_);
-            hayrackBlockEntity.putLeaf();
+            hayrackBlockEntity.putLeaf(p_60506_.getMainHandItem().getCount());
+            p_60506_.setItemSlot(EquipmentSlot.MAINHAND,new ItemStack(Items.AIR));
+            p_60504_.setBlock(p_60505_,p_60503_.cycle(HaveLeaf),3);
             return InteractionResult.SUCCESS;
             //
         }
@@ -119,9 +121,11 @@ public class hayrackBlock extends BaseEntityBlock implements SimpleWaterloggedBl
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> p_49915_) {
         p_49915_.add(HaveLeaf);
-        p_49915_.add(FACING);
+        //p_49915_.add(FACING);
         p_49915_.add(LeafOK);
-        p_49915_.add(EndTime);
+        //p_49915_.add(StartTime);
+        //p_49915_.add(EndTimet);
+        //p_49915_.add(hayrack_gets_num);
     }
 
     @Nullable
@@ -138,7 +142,7 @@ public class hayrackBlock extends BaseEntityBlock implements SimpleWaterloggedBl
     @Nullable
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level p_153212_, BlockState p_153213_, BlockEntityType<T> p_153214_) {
-        return createTickerHelper(p_153214_,BlockEntityInit.HAYRACK_BLOCK_ENTITY.get(),
+        return p_153212_.isClientSide ? null : createTickerHelper(p_153214_,BlockEntityInit.HAYRACK_BLOCK_ENTITY.get(),
                 hayrackBlockEntity::serverTick);
     }
 }

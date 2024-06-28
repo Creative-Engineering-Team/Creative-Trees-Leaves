@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "ctl:dry_leaf"
+    },
+    {
+      "item": "ctl:dry_leaf"
+    }
+  ],
+  "result": {
+    "count": 3,
+    "item": "ctl:fibre"
+  }
+}

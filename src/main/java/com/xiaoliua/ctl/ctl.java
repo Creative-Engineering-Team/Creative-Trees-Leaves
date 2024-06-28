@@ -68,6 +68,7 @@ public class ctl
             .displayItems((parameters, output) -> {
                 output.accept(ItemInit.LEAF.get());// Add the ctl item to the tab. For your own tabs, this method is preferred over the event
                 output.accept(ItemInit.DRY_LEAF.get());// Add the ctl item to the tab. For your own tabs, this method is preferred over the event
+                output.accept(ItemInit.FIBRE.get());// Add the ctl item to the tab. For your own tabs, this method is preferred over the event
                 output.accept(BlockInit.HAYRACK_BLOCK.get());// Add the ctl item to the tab. For your own tabs, this method is preferred over the event
             }).build());
 
