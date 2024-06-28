@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "have_leaf=false": {
+      "model": "ctl:block/hayrack"
+    },
+    "have_leaf=true,leaf_ok=false": {
+      "model": "ctl:block/hayrack1"
+    },
+    "have_leaf=true,leaf_ok=true": {
+      "model": "ctl:block/hayrack2"
+    }
+  }
+}
