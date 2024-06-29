@@ -12,6 +12,7 @@ import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -25,7 +26,13 @@ import java.util.stream.Collectors;
 @Mod.EventBusSubscriber(modid = ctl.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class Config
 {
-    private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder();
+    private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder()
+            .comment("Creative Trees&Leaves settings")
+            .push("general");
+
+    public static final ForgeConfigSpec.IntValue WAITING_TIME = BUILDER
+            .comment("Hayrack wait time(tick)")
+            .defineInRange("wait_time",600,0,Integer.MAX_VALUE);
 
     private static final ForgeConfigSpec.BooleanValue LOG_DIRT_BLOCK = BUILDER
             .comment("Whether to log the dirt block on common setup")
@@ -50,6 +57,7 @@ public class Config
     public static int magicNumber;
     public static String magicNumberIntroduction;
     public static Set<Item> items;
+    public static int waitTime;
 
     private static boolean validateItemName(final Object obj)
     {
@@ -62,6 +70,7 @@ public class Config
         logDirtBlock = LOG_DIRT_BLOCK.get();
         magicNumber = MAGIC_NUMBER.get();
         magicNumberIntroduction = MAGIC_NUMBER_INTRODUCTION.get();
+        waitTime = WAITING_TIME.get();
 
         // convert the list of strings into a set of items
         items = ITEM_STRINGS.get().stream()

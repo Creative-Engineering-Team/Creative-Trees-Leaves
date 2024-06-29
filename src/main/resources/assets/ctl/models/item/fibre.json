@@ -1,5 +1,5 @@
 {
-  "parent":"minecraft_item/generated",
+  "parent":"item/generated",
   "textures": {
     "layer0": "ctl:item/fibre"
   }

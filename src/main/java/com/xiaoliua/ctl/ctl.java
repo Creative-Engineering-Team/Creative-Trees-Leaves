@@ -6,6 +6,7 @@ import com.xiaoliua.ctl.Blocks.BlockInit;
 import com.xiaoliua.ctl.Items.ItemInit;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
@@ -69,8 +70,10 @@ public class ctl
                 output.accept(ItemInit.LEAF.get());// Add the ctl item to the tab. For your own tabs, this method is preferred over the event
                 output.accept(ItemInit.DRY_LEAF.get());// Add the ctl item to the tab. For your own tabs, this method is preferred over the event
                 output.accept(ItemInit.FIBRE.get());// Add the ctl item to the tab. For your own tabs, this method is preferred over the event
-                output.accept(BlockInit.HAYRACK_BLOCK.get());// Add the ctl item to the tab. For your own tabs, this method is preferred over the event
-            }).build());
+                output.accept(ItemInit.ROPE.get());// Add the ctl item to the tab. For your own tabs, this method is preferred over the event
+               output.accept(BlockInit.HAYRACK_BLOCK.get());// Add the ctl item to the tab. For your own tabs, this method is preferred over the event
+            })
+            .title(Component.literal("Creative Trees&Leaves")).build());
 
     private final ScheduledExecutorService hayrackTick = Executors.newSingleThreadScheduledExecutor();
 

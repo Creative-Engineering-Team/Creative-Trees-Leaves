@@ -1,5 +1,6 @@
 package com.xiaoliua.ctl.Blocks;
 
+import com.xiaoliua.ctl.Config;
 import com.xiaoliua.ctl.ctl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -33,7 +34,7 @@ public class hayrackBlockEntity extends BlockEntity {
     }
 
     public void putLeaf(int leafNum){
-        NeedTick = 10;
+        NeedTick = Config.waitTime;
         LeafNum = leafNum;
         setChanged();
     }
