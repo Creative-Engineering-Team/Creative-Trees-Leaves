@@ -1,13 +1,52 @@
 {
   "variants": {
-    "have_leaf=false": {
+    "have_leaf=false,facing=north": {
       "model": "ctl:block/hayrack"
     },
-    "have_leaf=true,leaf_ok=false": {
+    "have_leaf=true,leaf_ok=false,facing=north": {
       "model": "ctl:block/hayrack1"
     },
-    "have_leaf=true,leaf_ok=true": {
+    "have_leaf=true,leaf_ok=true,facing=north": {
       "model": "ctl:block/hayrack2"
+    },
+
+    "have_leaf=false,facing=east": {
+      "model": "ctl:block/hayrack",
+      "y": 90
+    },
+    "have_leaf=true,leaf_ok=false,facing=east": {
+      "model": "ctl:block/hayrack1",
+      "y": 90
+    },
+    "have_leaf=true,leaf_ok=true,facing=east": {
+      "model": "ctl:block/hayrack2",
+      "y": 90
+    },
+
+    "have_leaf=false,facing=south": {
+      "model": "ctl:block/hayrack",
+      "y": 180
+    },
+    "have_leaf=true,leaf_ok=false,facing=south": {
+      "model": "ctl:block/hayrack1",
+      "y": 180
+    },
+    "have_leaf=true,leaf_ok=true,facing=south": {
+      "model": "ctl:block/hayrack2",
+      "y": 180
+    },
+
+    "have_leaf=false,facing=west": {
+      "model": "ctl:block/hayrack",
+      "y": 270
+    },
+    "have_leaf=true,leaf_ok=false,facing=west": {
+      "model": "ctl:block/hayrack1",
+      "y": 270
+    },
+    "have_leaf=true,leaf_ok=true,facing=west": {
+      "model": "ctl:block/hayrack2",
+      "y": 270
     }
   }
 }

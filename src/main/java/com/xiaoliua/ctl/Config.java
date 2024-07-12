@@ -34,6 +34,10 @@ public class Config
             .comment("Hayrack wait time(tick)")
             .defineInRange("wait_time",600,0,Integer.MAX_VALUE);
 
+    public static final ForgeConfigSpec.BooleanValue USE_MINE_ABLE = BUILDER
+            .comment("Use mine able")
+            .define("useMineAble",true);
+
     private static final ForgeConfigSpec.BooleanValue LOG_DIRT_BLOCK = BUILDER
             .comment("Whether to log the dirt block on common setup")
             .define("logDirtBlock", true);
@@ -58,6 +62,7 @@ public class Config
     public static String magicNumberIntroduction;
     public static Set<Item> items;
     public static int waitTime;
+    public static boolean useMineAble;
 
     private static boolean validateItemName(final Object obj)
     {
@@ -71,6 +76,7 @@ public class Config
         magicNumber = MAGIC_NUMBER.get();
         magicNumberIntroduction = MAGIC_NUMBER_INTRODUCTION.get();
         waitTime = WAITING_TIME.get();
+        useMineAble = USE_MINE_ABLE.get();
 
         // convert the list of strings into a set of items
         items = ITEM_STRINGS.get().stream()
@@ -96,5 +102,22 @@ public class Config
                                 new LootTableProvider.SubProviderEntry(ctlBlockLootTableProvider::new, LootContextParamSets.BLOCK)
                         ))
         );
+
+        event.getGenerator().addProvider(
+                event.includeServer(),
+                (DataProvider.Factory<ctlBlockTagProvider>) pOutput -> new ctlBlockTagProvider(pOutput,lp,ctl.MODID,efh)
+        );
+
+        event.getGenerator().addProvider(
+                event.includeClient(),
+                (DataProvider.Factory<ctlLanguageProviderEnUs>) pOutput -> new ctlLanguageProviderEnUs(pOutput,ctl.MODID,"en_us")
+        );
+
+        event.getGenerator().addProvider(
+                event.includeClient(),
+                (DataProvider.Factory<ctlLanguageProviderZhCn>) pOutput -> new ctlLanguageProviderZhCn(pOutput,ctl.MODID,"zh_cn")
+        );
+
+
     }
 }

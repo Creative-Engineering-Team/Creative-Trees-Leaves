@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "minecraft:clay_ball"
+    }
+  },
+  "pattern": [
+    "aa ",
+    "   ",
+    "   "
+  ],
+  "result": {
+    "item": "ctl:unfired_clay_hoe"
+  },
+  "show_notification": true
+}

@@ -5,22 +5,30 @@ import com.xiaoliua.ctl.Blocks.BlockEntityInit;
 import com.xiaoliua.ctl.Blocks.BlockInit;
 import com.xiaoliua.ctl.Items.ItemInit;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.model.Material;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.item.Item;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.AbstractBannerBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
+import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -32,11 +40,15 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
+import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
+import javax.swing.text.html.HTML;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.BooleanSupplier;
+import java.util.function.Supplier;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(ctl.MODID)
@@ -71,7 +83,12 @@ public class ctl
                 output.accept(ItemInit.DRY_LEAF.get());// Add the ctl item to the tab. For your own tabs, this method is preferred over the event
                 output.accept(ItemInit.FIBRE.get());// Add the ctl item to the tab. For your own tabs, this method is preferred over the event
                 output.accept(ItemInit.ROPE.get());// Add the ctl item to the tab. For your own tabs, this method is preferred over the event
-               output.accept(BlockInit.HAYRACK_BLOCK.get());// Add the ctl item to the tab. For your own tabs, this method is preferred over the event
+                output.accept(BlockInit.HAYRACK_BLOCK.get());// Add the ctl item to the tab. For your own tabs, this method is preferred over the event
+                output.accept(ItemInit.UNFIRED_CLAY_AXE.get());
+                output.accept(ItemInit.UNFIRED_CLAY_HOE.get());
+                output.accept(ItemInit.UNFIRED_CLAY_SWORD.get());
+                output.accept(ItemInit.UNFIRED_CLAY_SHOVEL.get());
+                output.accept(ItemInit.UNFIRED_CLAY_PICKAXE.get());
             })
             .title(Component.literal("Creative Trees&Leaves")).build());
 
@@ -101,6 +118,9 @@ public class ctl
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);
 
+        MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW,(PlayerEvent.BreakSpeed event) -> event.setNewSpeed(modifyBreakSpeed(
+                event.getEntity(),event.getState(),event.getPosition().orElse(null),event.getNewSpeed())));
+
         // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
@@ -118,6 +138,35 @@ public class ctl
         Config.items.forEach((item) -> LOGGER.info("ITEM >> {}", item.toString()));
     }
 
+    public static float modifyBreakSpeed(Player player, BlockState state, @Nullable BlockPos pos, float speed)
+    {
+        //if (player.getName().equals(Component.literal("Dev")))return 114514;
+        return isUsingCorrectToolToMine(state, pos, player) ? speed : 0;
+    }
+
+    public static boolean isUsingCorrectToolToMine(BlockState state, @Nullable BlockPos pos, Player player)
+    {
+        return isUsingCorrectTool(state, pos, player,  true);
+    }
+
+    public static boolean isUsingCorrectTool(BlockState state, @Nullable BlockPos pos, Player player,
+                                              boolean checkingCanMine) {
+        if (!Config.useMineAble)return true;
+        if (state.is(TagsInit.notTool)){
+            return true;
+        }
+        if (state.is(TagsInit.useTool) && (player.getMainHandItem().isCorrectToolForDrops(state))){
+            return true;
+        }
+        if (state.is(TagsInit.useTool) && (player.getMainHandItem().getDestroySpeed(state)>1.0f)){
+            return true;
+        }
+        if (!state.is(TagsInit.useTool)){
+            return true;
+        }
+        return false;
+    }
+
     // Add the ctl block item to the building blocks tab
     private void addCreative(BuildCreativeModeTabContentsEvent event)
     {
@@ -130,8 +179,12 @@ public class ctl
     public void onServerStarting(ServerStartingEvent event)
     {
         // Do something when the server starts
+
+
         LOGGER.info("HELLO from server starting");
+        //Blocks.OAK_WOOD = new Block(BlockBehaviour.Properties.of().strength(-1f).sound(SoundType.WOOD));
     }
+
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)

@@ -2,12 +2,16 @@ package com.xiaoliua.ctl.Blocks;
 
 import com.xiaoliua.ctl.Items.ItemInit;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -15,34 +19,57 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-public class hayrackBlock extends BaseEntityBlock {
+    public class hayrackBlock extends BaseEntityBlock{
     //public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty HaveLeaf = BooleanProperty.create("have_leaf");
     public static final BooleanProperty LeafOK = BooleanProperty.create("leaf_ok");
     //public static final BooleanProperty EndTimet = BooleanProperty.create("start_time");
     //public static final IntegerProperty StartTime = IntegerProperty.create("start_timet",0,70);
-    //public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     //public static final IntegerProperty hayrack_gets_num = IntegerProperty.create("hayrack_gets_num",0,100);
     protected hayrackBlock() {
-        super(Properties.of().strength(5f).noOcclusion());
+        super(Properties.of().strength(3f).noOcclusion().sound(SoundType.WOOD)
+                .requiresCorrectToolForDrops());
         this.registerDefaultState(this.defaultBlockState().setValue(HaveLeaf,false));
         this.registerDefaultState(this.defaultBlockState().setValue(LeafOK,false));
         //this.registerDefaultState(this.defaultBlockState().setValue(StartTime,0));
-        //this.registerDefaultState(this.defaultBlockState().setValue(EndTimet,true));
+        //this.registerDefaultState(this.defaultBlockState().setValue(EndTimet,true));`
     }
 
-//    public BlockState rotate(BlockState p_54125_, Rotation p_54126_) {
-//        return p_54125_.setValue(FACING, p_54126_.rotate(p_54125_.getValue(FACING)));
+//    @Override
+//    public void setPlacedBy(Level p_49847_, BlockPos p_49848_, BlockState p_49849_, @Nullable LivingEntity p_49850_, ItemStack p_49851_) {
+//        if (p_49850_ != null){
+//            p_49847_.setBlock(p_49848_,p_49849_.setValue(FACING, getFacing(p_49848_,p_49850_)),3);
+//        }
+//        super.setPlacedBy(p_49847_, p_49848_, p_49849_, p_49850_, p_49851_);
 //    }
 //
-//    public BlockState mirror(BlockState p_54122_, Mirror p_54123_) {
-//        return p_54122_.rotate(p_54123_.getRotation(p_54122_.getValue(FACING)));
+//    public Direction getFacing(BlockPos pos, LivingEntity entity){
+//        Vec3 vec = entity.position();
+//        return Direction.getFacingAxis()
 //    }
+
+    @Nullable
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext p_49820_) {
+        return this.defaultBlockState().setValue(FACING,p_49820_.getHorizontalDirection());
+    }
+
+    public BlockState rotate(BlockState p_54125_, Rotation p_54126_) {
+        return p_54125_.setValue(FACING, p_54126_.rotate(p_54125_.getValue(FACING)));
+    }
+
+    public BlockState mirror(BlockState p_54122_, Mirror p_54123_) {
+        return p_54122_.rotate(p_54123_.getRotation(p_54122_.getValue(FACING)));
+    }
 
 //    @Override
 //    public void randomTick(BlockState p_222954_, ServerLevel p_222955_, BlockPos p_222956_, RandomSource p_222957_) {
@@ -121,7 +148,7 @@ public class hayrackBlock extends BaseEntityBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> p_49915_) {
         p_49915_.add(HaveLeaf);
-        //p_49915_.add(FACING);
+        p_49915_.add(FACING);
         p_49915_.add(LeafOK);
         //p_49915_.add(StartTime);
         //p_49915_.add(EndTimet);

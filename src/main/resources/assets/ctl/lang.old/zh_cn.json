@@ -1,0 +1,12 @@
+{
+  "item.ctl.leaf": "叶 ",
+  "item.ctl.dry_leaf": "干叶",
+  "item.ctl.fibre": "纤维",
+  "block.ctl.hayrack": "干燥架",
+  "item.ctl.rope": "绳子",
+  "item.ctl.unfired_clay_axe": "未成型的粘土斧",
+  "item.ctl.unfired_clay_hoe": "未成型的粘土锄",
+  "item.ctl.unfired_clay_pickaxe": "未成型的粘土稿",
+  "item.ctl.unfired_clay_shovel": "未成型的粘土铲",
+  "item.ctl.unfired_clay_sword": "未成型的粘土剑"
+}

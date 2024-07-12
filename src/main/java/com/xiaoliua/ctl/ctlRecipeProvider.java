@@ -2,12 +2,10 @@ package com.xiaoliua.ctl;
 
 import com.xiaoliua.ctl.Blocks.BlockInit;
 import com.xiaoliua.ctl.Items.ItemInit;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.world.item.Items;
 
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 public class ctlRecipeProvider extends RecipeProvider {
@@ -40,6 +38,7 @@ public class ctlRecipeProvider extends RecipeProvider {
                 .define('a',Items.STICK)
                 .unlockedBy("has_stick",has(Items.STICK))
                 .save(p_251297_);
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemInit.ROPE.get())
                 .pattern("aaa")
                 .pattern("a a")
@@ -47,5 +46,46 @@ public class ctlRecipeProvider extends RecipeProvider {
                 .define('a',ItemInit.FIBRE.get())
                 .unlockedBy("has_fibre",has(ItemInit.FIBRE.get()))
                 .save(p_251297_);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemInit.UNFIRED_CLAY_AXE.get())
+                .pattern("aa ")
+                .pattern("a  ")
+                .pattern("   ")
+                .define('a',Items.CLAY_BALL)
+                .unlockedBy("has_clay_ball",has(Items.CLAY_BALL))
+                .save(p_251297_);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemInit.UNFIRED_CLAY_HOE.get())
+                .pattern("aa ")
+                .pattern("   ")
+                .pattern("   ")
+                .define('a',Items.CLAY_BALL)
+                .unlockedBy("has_clay_ball",has(Items.CLAY_BALL))
+                .save(p_251297_);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemInit.UNFIRED_CLAY_PICKAXE.get())
+                .pattern("aaa")
+                .pattern("   ")
+                .pattern("   ")
+                .define('a',Items.CLAY_BALL)
+                .unlockedBy("has_clay_ball",has(Items.CLAY_BALL))
+                .save(p_251297_);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemInit.UNFIRED_CLAY_SHOVEL.get())
+                .pattern(" a ")
+                .pattern("   ")
+                .pattern("   ")
+                .define('a',Items.CLAY_BALL)
+                .unlockedBy("has_clay_ball",has(Items.CLAY_BALL))
+                .save(p_251297_);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemInit.UNFIRED_CLAY_SWORD.get())
+                .pattern(" a ")
+                .pattern(" a ")
+                .pattern("   ")
+                .define('a',Items.CLAY_BALL)
+                .unlockedBy("has_clay_ball",has(Items.CLAY_BALL))
+                .save(p_251297_);
+
     }
 }
