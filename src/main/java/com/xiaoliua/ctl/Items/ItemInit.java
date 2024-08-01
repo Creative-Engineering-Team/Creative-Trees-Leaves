@@ -16,10 +16,12 @@ public class ItemInit {
 
     //public static final Supplier<Item> RUBY = ITEMS.register("hayrack",() -> new Item(new Item.Properties()));
 
-    public static final Supplier<Item> RUBY_BLOCK = ITEMS.register("hayrack",()->new BlockItem(BlockInit.HAYRACK_BLOCK.get(),
+    public static final Supplier<Item> RUBY_BLOCK = ITEMS.register("hayrack",
+            ()->new BlockItem(BlockInit.HAYRACK_BLOCK.get(),
             new Item.Properties()));
     public static final Supplier<Item> SIMPLE_CRAFTING_TABLE_BLOCK = ITEMS.register("simple_crafting_table",
-            ()->new BlockItem(BlockInit.SIMPLE_CRAFTING_TABLE.get(),new Item.Properties()));
+            ()->new BlockItem(BlockInit.SIMPLE_CRAFTING_TABLE.get(),
+            new Item.Properties()));
     public static final Supplier<Item> LEAF = ITEMS.register("leaf",()->new LeafItem(new Item.Properties()));
     public static final Supplier<Item> DRY_LEAF = ITEMS.register("dry_leaf",()->new DryLeafItem(new Item.Properties()));
     public static final Supplier<Item> FIBRE = ITEMS.register("fibre",()->new fibreItem(new Item.Properties()));

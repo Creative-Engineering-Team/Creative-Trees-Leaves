@@ -4,23 +4,20 @@ import com.mojang.logging.LogUtils;
 import com.xiaoliua.ctl.Blocks.BlockEntityInit;
 import com.xiaoliua.ctl.Blocks.BlockInit;
 import com.xiaoliua.ctl.Items.ItemInit;
-import mekanism.api.MekanismAPI;
-import mekanism.api.event.MekanismTeleportEvent;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.AbstractBannerBlock;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.WoodType;
@@ -30,6 +27,7 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -51,6 +49,7 @@ import org.stringtemplate.v4.ST;
 import javax.swing.text.html.HTML;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -62,6 +61,7 @@ import java.util.regex.Pattern;
 @Mod(ctl.MODID)
 public class ctl
 {
+    public static final Random RANDOM = new Random();
     // Define mod id in a common place for everything to reference
     public static final String MODID = "ctl";
     // Directly reference a slf4j logger
@@ -119,6 +119,26 @@ public class ctl
 
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW,(PlayerEvent.BreakSpeed event) -> event.setNewSpeed(modifyBreakSpeed(
                 event.getEntity(),event.getState(),event.getPosition().orElse(null),event.getNewSpeed())));
+        MinecraftForge.EVENT_BUS.addListener((BlockEvent.BreakEvent event)->{
+            Player player = event.getPlayer();
+            Level world = player.level();
+            BlockState blockState = event.getState();
+            if (blockState.is(TagsInit.Blocks.Leaves) && !player.getMainHandItem().getItem().equals(Items.SHEARS)&&
+                    !player.isCreative()){
+                event.setExpToDrop(0);
+                //event.setCanceled(true);
+                //List<ItemStack> drop = Block.getDrops(blockState, (ServerLevel) world,event.getPos(),null);
+                //drop.clear();
+                LOGGER.info("ttt");
+                //if (RANDOM.nextFloat() < 0.75){
+                    ItemStack realDrop = new ItemStack(ItemInit.PLIABLE_BRANCH.get());
+                    world.addFreshEntity(new ItemEntity(world,event.getPos().getX(),event.getPos().getY(),event.getPos().getZ(),realDrop));
+                    if (RANDOM.nextFloat() < 0.1){
+                        world.addFreshEntity(new ItemEntity(world,event.getPos().getX(),event.getPos().getY(),event.getPos().getZ(),realDrop));
+                    }
+                //}
+            }
+        });
 
         // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);

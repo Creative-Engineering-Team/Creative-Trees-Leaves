@@ -1,6 +1,7 @@
 package com.xiaoliua.ctl;
 
 import com.xiaoliua.ctl.Items.ItemInit;
+import net.minecraft.Util;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.LanguageProvider;
 
@@ -21,5 +22,8 @@ public class ctlLanguageProviderZhCn extends LanguageProvider {
         this.add(ItemInit.UNFIRED_CLAY_HOE.get(),"未成型的粘土锄");
         this.add(ItemInit.UNFIRED_CLAY_AXE.get(),"未成型的粘土斧");
         this.add(ItemInit.RUBY_BLOCK.get(),"干燥架");
+        this.add(ItemInit.PLIABLE_BRANCH.get(),"枝条");
+        this.add(ItemInit.DRY_PLIABLE_BRANCH.get(),"干燥枝条");
+        this.add(ItemInit.SIMPLE_CRAFTING_TABLE_BLOCK.get(), "简易工作台");
     }
 }

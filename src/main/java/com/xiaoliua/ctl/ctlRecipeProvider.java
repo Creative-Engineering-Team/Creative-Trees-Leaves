@@ -5,6 +5,7 @@ import com.xiaoliua.ctl.Items.ItemInit;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.world.item.Items;
+import net.minecraftforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
@@ -92,5 +93,14 @@ public class ctlRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_clay_ball",has(Items.CLAY_BALL))
                 .save(p_251297_);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC,ItemInit.SIMPLE_CRAFTING_TABLE_BLOCK.get())
+                .pattern("iti")
+                .pattern("www")
+                .pattern("iti")
+                .define('i',Items.IRON_INGOT)
+                .define('t', Items.COPPER_INGOT)
+                .define('w', TagsInit.Items.Planks)
+                .unlockedBy("has_iron_ingot",has(Items.IRON_INGOT))
+                .save(p_251297_);
     }
 }

@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "i": {
+      "item": "minecraft:iron_ingot"
+    },
+    "t": {
+      "item": "minecraft:copper_ingot"
+    },
+    "w": {
+      "tag": "ctl:planks"
+    }
+  },
+  "pattern": [
+    "iti",
+    "www",
+    "iti"
+  ],
+  "result": {
+    "item": "ctl:simple_crafting_table"
+  },
+  "show_notification": true
+}

@@ -117,7 +117,5 @@ public class Config
                 event.includeClient(),
                 (DataProvider.Factory<ctlLanguageProviderZhCn>) pOutput -> new ctlLanguageProviderZhCn(pOutput,ctl.MODID,"zh_cn")
         );
-
-
     }
 }

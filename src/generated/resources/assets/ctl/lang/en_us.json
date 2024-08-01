@@ -1,11 +1,15 @@
 {
-  "item.ctl.dry_leaf": "Dry leaf",
+  "block.ctl.hayrack": "Dry Rack",
+  "block.ctl.simple_crafting_table": "Simple Crafting Table",
+  "item.ctl.dry_leaf": "Dry Leaf",
+  "item.ctl.dry_pliable_branch": "Dry Branch",
   "item.ctl.fibre": "Fibre",
   "item.ctl.leaf": "Leaf",
+  "item.ctl.pliable_branch": "Branch",
   "item.ctl.rope": "Rope",
-  "item.ctl.unfired_clay_axe": "Unfired clay axe",
-  "item.ctl.unfired_clay_hoe": "Unfired clay hoe",
-  "item.ctl.unfired_clay_pickaxe": "Unfired clay pickaxe",
-  "item.ctl.unfired_clay_shovel": "Unfired clay shovel",
-  "item.ctl.unfired_clay_sword": "Unfired clay sword"
+  "item.ctl.unfired_clay_axe": "Unfired Clay Axe",
+  "item.ctl.unfired_clay_hoe": "Unfired Clay Hoe",
+  "item.ctl.unfired_clay_pickaxe": "Unfired Clay Pickaxe",
+  "item.ctl.unfired_clay_shovel": "Unfired Clay Shovel",
+  "item.ctl.unfired_clay_sword": "Unfired Clay Sword"
 }

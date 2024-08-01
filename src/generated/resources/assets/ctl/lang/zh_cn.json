@@ -1,7 +1,11 @@
 {
+  "block.ctl.hayrack": "干燥架",
+  "block.ctl.simple_crafting_table": "简易工作台",
   "item.ctl.dry_leaf": "干燥树叶",
+  "item.ctl.dry_pliable_branch": "干燥枝条",
   "item.ctl.fibre": "纤维",
   "item.ctl.leaf": "树叶",
+  "item.ctl.pliable_branch": "枝条",
   "item.ctl.rope": "绳子",
   "item.ctl.unfired_clay_axe": "未成型的粘土斧",
   "item.ctl.unfired_clay_hoe": "未成型的粘土锄",

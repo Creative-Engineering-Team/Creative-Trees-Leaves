@@ -1,12 +1,12 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_dry_pliable_branch": {
+    "has_leaf": {
       "conditions": {
         "items": [
           {
             "items": [
-              "ctl:dry_pliable_branch"
+              "ctl:leaf"
             ]
           }
         ]
@@ -15,20 +15,20 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "ctl:fibre"
+        "recipe": "ctl:leaf"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
   },
   "requirements": [
     [
-      "has_dry_pliable_branch",
+      "has_leaf",
       "has_the_recipe"
     ]
   ],
   "rewards": {
     "recipes": [
-      "ctl:fibre"
+      "ctl:leaf"
     ]
   },
   "sends_telemetry_event": false

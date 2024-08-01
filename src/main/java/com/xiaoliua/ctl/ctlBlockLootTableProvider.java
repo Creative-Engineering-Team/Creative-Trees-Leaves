@@ -18,7 +18,8 @@ import java.util.Set;
 public class ctlBlockLootTableProvider extends BlockLootSubProvider {
 
     public static final Set<Block> BLOCKS = Set.of(
-            BlockInit.HAYRACK_BLOCK.get()
+            BlockInit.HAYRACK_BLOCK.get(),
+            BlockInit.SIMPLE_CRAFTING_TABLE.get()
     );
 
     protected ctlBlockLootTableProvider() {
@@ -28,7 +29,7 @@ public class ctlBlockLootTableProvider extends BlockLootSubProvider {
     @Override
     protected void generate() {
         this.dropSelf(BlockInit.HAYRACK_BLOCK.get());
-        this.dropSelf(BlockInit.SIMPLE_CRAFTING_TABLE.get());
+        this.dropOther(BlockInit.SIMPLE_CRAFTING_TABLE.get(),BlockInit.SIMPLE_CRAFTING_TABLE.get());
     }
 
     @Override

@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=north": {
+      "model": "ctl:block/simple_crafting_table"
+    },
+    "facing=east": {
+      "model": "ctl:block/simple_crafting_table",
+      "y": 90
+    },
+    "facing=south": {
+      "model": "ctl:block/simple_crafting_table",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "ctl:block/simple_crafting_table",
+      "y": 270
+    }
+  }
+}

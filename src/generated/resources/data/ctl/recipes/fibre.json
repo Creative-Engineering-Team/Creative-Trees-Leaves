@@ -3,10 +3,10 @@
   "category": "misc",
   "ingredients": [
     {
-      "item": "ctl:dry_leaf"
+      "item": "ctl:dry_pliable_branch"
     },
     {
-      "item": "ctl:dry_leaf"
+      "item": "ctl:dry_pliable_branch"
     }
   ],
   "result": {
