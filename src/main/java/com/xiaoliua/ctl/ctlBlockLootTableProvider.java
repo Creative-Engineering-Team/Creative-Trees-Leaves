@@ -28,6 +28,7 @@ public class ctlBlockLootTableProvider extends BlockLootSubProvider {
     @Override
     protected void generate() {
         this.dropSelf(BlockInit.HAYRACK_BLOCK.get());
+        this.dropSelf(BlockInit.SIMPLE_CRAFTING_TABLE.get());
     }
 
     @Override

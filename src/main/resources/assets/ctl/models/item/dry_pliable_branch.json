@@ -1,6 +1,6 @@
-{
+﻿{
   "parent": "item/generated",
   "textures": {
-    "layer0": "ctl:item/hayrack"
+    "layer0": "ctl:item/dry_pliable_branch"
   }
 }

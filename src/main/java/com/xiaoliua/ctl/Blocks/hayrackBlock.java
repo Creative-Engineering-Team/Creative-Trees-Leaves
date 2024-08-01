@@ -1,5 +1,7 @@
 package com.xiaoliua.ctl.Blocks;
 
+import com.xiaoliua.ctl.Enums.hayrackPutProperty;
+import com.xiaoliua.ctl.Enums.hayrackPuts;
 import com.xiaoliua.ctl.Items.ItemInit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -105,7 +107,11 @@ import org.jetbrains.annotations.Nullable;
             if (!p_60506_.getMainHandItem().is(Items.AIR)) return InteractionResult.PASS;
             var hayrackBlockEntity = (com.xiaoliua.ctl.Blocks.hayrackBlockEntity)p_60504_.getBlockEntity(p_60505_);
             //p_60506_.setItemSlot(EquipmentSlot.MAINHAND,new ItemStack(ItemInit.DRY_LEAF.get(),64));
-            p_60506_.setItemSlot(EquipmentSlot.MAINHAND,new ItemStack(ItemInit.DRY_LEAF.get(),hayrackBlockEntity.getLeafNum()));
+            if (hayrackBlockEntity.putsType() == hayrackPuts.leaf) {
+                p_60506_.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ItemInit.DRY_LEAF.get(), hayrackBlockEntity.getLeafNum()));
+            }else {
+                p_60506_.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ItemInit.DRY_PLIABLE_BRANCH.get(), hayrackBlockEntity.getLeafNum()));
+            }
             p_60504_.setBlock(p_60505_,p_60503_.cycle(HaveLeaf).cycle(LeafOK),3);
             //p_60504_.setBlock(p_60505_,p_60503_.cycle(LeafOK),3);
             return InteractionResult.SUCCESS;
@@ -117,6 +123,12 @@ import org.jetbrains.annotations.Nullable;
             p_60504_.setBlock(p_60505_,p_60503_.cycle(HaveLeaf),3);
             return InteractionResult.SUCCESS;
             //
+        }else if (p_60506_.getMainHandItem().getItem() == ItemInit.PLIABLE_BRANCH.get()){
+            var hayrackBlockEntity = (com.xiaoliua.ctl.Blocks.hayrackBlockEntity)p_60504_.getBlockEntity(p_60505_);
+            hayrackBlockEntity.putBranch(p_60506_.getMainHandItem().getCount());
+            p_60506_.setItemSlot(EquipmentSlot.MAINHAND,new ItemStack(Items.AIR));
+            p_60504_.setBlock(p_60505_,p_60503_.cycle(HaveLeaf),3);
+            return InteractionResult.SUCCESS;
         }
 
         return InteractionResult.PASS;

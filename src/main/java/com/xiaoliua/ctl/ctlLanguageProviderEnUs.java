@@ -20,5 +20,6 @@ public class ctlLanguageProviderEnUs extends LanguageProvider {
         this.add(ItemInit.UNFIRED_CLAY_SWORD.get(),"Unfired clay sword");
         this.add(ItemInit.UNFIRED_CLAY_HOE.get(),"Unfired clay hoe");
         this.add(ItemInit.UNFIRED_CLAY_AXE.get(),"Unfired clay axe");
+        this.add(ItemInit.RUBY_BLOCK.get(),"Hayrack");
     }
 }

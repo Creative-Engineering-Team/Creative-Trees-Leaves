@@ -5,6 +5,7 @@ import com.xiaoliua.ctl.Items.ItemInit;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.world.item.Items;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 
@@ -14,7 +15,7 @@ public class ctlRecipeProvider extends RecipeProvider {
     }
 
     @Override
-    protected void buildRecipes(Consumer<FinishedRecipe> p_251297_) {
+    protected void buildRecipes(@NotNull Consumer<FinishedRecipe> p_251297_) {
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, Items.FLINT)
                 .requires(Items.GRAVEL,3)
                 .unlockedBy("has_gravel",has(Items.GRAVEL))
@@ -27,9 +28,13 @@ public class ctlRecipeProvider extends RecipeProvider {
                 .requires(Items.GOLDEN_APPLE,9)
                 .unlockedBy("has_golden_apple",has(Items.GOLDEN_APPLE))
                 .save(p_251297_);
+        ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC,ItemInit.LEAF.get(),2)
+                .requires(ItemInit.PLIABLE_BRANCH.get())
+                .unlockedBy("has_leaf",has(ItemInit.LEAF.get()))
+                .save(p_251297_);
         ShapelessRecipeBuilder.shapeless(RecipeCategory.MISC, ItemInit.FIBRE.get(),3)
-                .requires(ItemInit.DRY_LEAF.get(),2)
-                .unlockedBy("has_dry_leaf",has(ItemInit.DRY_LEAF.get()))
+                .requires(ItemInit.DRY_PLIABLE_BRANCH.get(),2)
+                .unlockedBy("has_dry_pliable_branch",has(ItemInit.DRY_PLIABLE_BRANCH.get()))
                 .save(p_251297_);
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, BlockInit.HAYRACK_BLOCK.get())
                 .pattern("aaa")

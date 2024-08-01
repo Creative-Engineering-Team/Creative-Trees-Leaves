@@ -1,0 +1,27 @@
+{
+  "replace": false,
+  "values": [
+    "ae2:cable_bus",
+    "ae2:wireless_access_point",
+    "ae2:quantum_ring",
+    "ae2:quantum_link",
+    "ae2:controller",
+    "ae2:drive",
+    "ae2:chest",
+    "ae2:interface",
+    "ae2:io_port",
+    "ae2:pattern_provider",
+    "ae2:inscriber",
+    "ae2:cell_workbench",
+    "ae2:charger",
+    "ae2:condenser",
+    "ae2:growth_accelerator",
+    "ae2:crank",
+    "ae2:energy_acceptor",
+    "ae2:vibration_chamber",
+    "ae2:crafting_unit",
+    "ae2:crafting_monitor",
+    "ae2:crafting_accelerator",
+    "ae2:molecular_assembler"
+  ]
+}

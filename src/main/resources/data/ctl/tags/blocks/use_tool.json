@@ -52,6 +52,8 @@
     "minecraft:daylight_detector",
     "minecraft:observer",
     "#forge:stone",
-    "#forge:sandstone"
+    "#forge:sandstone",
+    "#forge:storage_blocks",
+    "#minecraft:fences"
   ]
 }

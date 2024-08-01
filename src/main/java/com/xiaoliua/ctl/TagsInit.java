@@ -8,10 +8,16 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
 public class TagsInit {
-    public static final TagKey<Block> useTool = create("use_tool");
-    public static final TagKey<Block> notTool = create("not_tool");
-    private static TagKey<Block> create(String id)
-    {
-        return TagKey.create(BuiltInRegistries.BLOCK.key(), new ResourceLocation(ctl.MODID, id));
+    class Blocks{
+        public static final TagKey<Block> useTool = create("use_tool");
+        public static final TagKey<Block> notTool = create("not_tool");
+        public static final TagKey<Block> createBlockMachines = create("create_machines");
+        public static final TagKey<Block> ae2BlockMachines = create("ae2_machines");
+        public static final TagKey<Block> IEMachines = create("ie_machines");
+        public static final TagKey<Block> MEKMachines = create("mek_machines");
+        private static TagKey<Block> create(String id)
+        {
+            return TagKey.create(BuiltInRegistries.BLOCK.key(), new ResourceLocation(ctl.MODID, id));
+        }
     }
 }

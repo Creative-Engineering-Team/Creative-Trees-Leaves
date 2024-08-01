@@ -4,7 +4,10 @@ import com.mojang.logging.LogUtils;
 import com.xiaoliua.ctl.Blocks.BlockEntityInit;
 import com.xiaoliua.ctl.Blocks.BlockInit;
 import com.xiaoliua.ctl.Items.ItemInit;
+import mekanism.api.MekanismAPI;
+import mekanism.api.event.MekanismTeleportEvent;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
@@ -31,6 +34,7 @@ import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -42,13 +46,17 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
+import org.stringtemplate.v4.ST;
 
 import javax.swing.text.html.HTML;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.function.BooleanSupplier;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(ctl.MODID)
@@ -58,47 +66,35 @@ public class ctl
     public static final String MODID = "ctl";
     // Directly reference a slf4j logger
     public static final Logger LOGGER = LogUtils.getLogger();
-    // Create a Deferred Register to hold Blocks which will all be registered under the "ctlmod" namespace
-    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, MODID);
-    // Create a Deferred Register to hold Items which will all be registered under the "ctlmod" namespace
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, MODID);
-    // Create a Deferred Register to hold CreativeModeTabs which will all be registered under the "ctlmod" namespace
+    // Create a Deferred Register to hold CreativeModeTabs which will all be registered under the "ctl" namespace
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
-
-    // Creates a new Block with the id "ctlmod:ctl_block", combining the namespace and path
-    public static final RegistryObject<Block> EXAMPLE_BLOCK = BLOCKS.register("ctl_block", () -> new Block(BlockBehaviour.Properties.of().mapColor(MapColor.STONE)));
-    // Creates a new BlockItem with the id "ctlmod:ctl_block", combining the namespace and path
-    public static final RegistryObject<Item> EXAMPLE_BLOCK_ITEM = ITEMS.register("ctl_block", () -> new BlockItem(EXAMPLE_BLOCK.get(), new Item.Properties()));
-
-    // Creates a new food item with the id "ctlmod:ctl_id", nutrition 1 and saturation 2
-//    public static final RegistryObject<Item> EXAMPLE_ITEM = ITEMS.register("ctl_item", () -> new Item(new Item.Properties().food(new FoodProperties.Builder()
-//            .alwaysEat().nutrition(1).saturationMod(2f).build())));
-//
-    // Creates a creative tab with the id "ctlmod:ctl_tab" for the ctl item, that is placed after the combat tab
+    // Creates a creative tab with the id "ctl:ctl_tab" for the ctl item, that is placed after the combat tab
     public static final RegistryObject<CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register("ctl_tab", () -> CreativeModeTab.builder()
             .withTabsBefore(CreativeModeTabs.COMBAT)
             .icon(() -> ItemInit.LEAF.get().getDefaultInstance())
             .displayItems((parameters, output) -> {
                 output.accept(ItemInit.LEAF.get());// Add the ctl item to the tab. For your own tabs, this method is preferred over the event
-                output.accept(ItemInit.DRY_LEAF.get());// Add the ctl item to the tab. For your own tabs, this method is preferred over the event
-                output.accept(ItemInit.FIBRE.get());// Add the ctl item to the tab. For your own tabs, this method is preferred over the event
-                output.accept(ItemInit.ROPE.get());// Add the ctl item to the tab. For your own tabs, this method is preferred over the event
-                output.accept(BlockInit.HAYRACK_BLOCK.get());// Add the ctl item to the tab. For your own tabs, this method is preferred over the event
+                output.accept(ItemInit.DRY_LEAF.get());
+                output.accept(ItemInit.FIBRE.get());
+                output.accept(ItemInit.ROPE.get());
+                output.accept(BlockInit.HAYRACK_BLOCK.get());
                 output.accept(ItemInit.UNFIRED_CLAY_AXE.get());
                 output.accept(ItemInit.UNFIRED_CLAY_HOE.get());
                 output.accept(ItemInit.UNFIRED_CLAY_SWORD.get());
                 output.accept(ItemInit.UNFIRED_CLAY_SHOVEL.get());
                 output.accept(ItemInit.UNFIRED_CLAY_PICKAXE.get());
+                output.accept(ItemInit.SIMPLE_CRAFTING_TABLE_BLOCK.get());
+                output.accept(ItemInit.PLIABLE_BRANCH.get());
+                output.accept(ItemInit.DRY_PLIABLE_BRANCH.get());
             })
-            .title(Component.literal("Creative Trees&Leaves")).build());
-
-    private final ScheduledExecutorService hayrackTick = Executors.newSingleThreadScheduledExecutor();
-
+            .title(Component.literal("Creative Trees & Leaves")).build());
+    //Create a List to match the blocks
+    public static final List<String> useToolBlocksNames = new ArrayList<>();
     public ctl()
     {
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        // Register the commonSetup method for modloading
+        // Register the commonSetup method for mod loading
         modEventBus.addListener(this::commonSetup);
 
         // Register the Deferred Register to the mod event bus so blocks get registered
@@ -115,6 +111,9 @@ public class ctl
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
 
+        //ContainerInit.CONTAINERS.register(modEventBus);
+        //ctlRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);
+
         // Register the item to a creative tab
         modEventBus.addListener(this::addCreative);
 
@@ -128,14 +127,6 @@ public class ctl
     private void commonSetup(final FMLCommonSetupEvent event)
     {
         // Some common setup code
-        LOGGER.info("HELLO FROM COMMON SETUP");
-
-        if (Config.logDirtBlock)
-            LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
-
-        LOGGER.info(Config.magicNumberIntroduction + Config.magicNumber);
-
-        Config.items.forEach((item) -> LOGGER.info("ITEM >> {}", item.toString()));
     }
 
     public static float modifyBreakSpeed(Player player, BlockState state, @Nullable BlockPos pos, float speed)
@@ -149,29 +140,40 @@ public class ctl
         return isUsingCorrectTool(state, pos, player,  true);
     }
 
-    public static boolean isUsingCorrectTool(BlockState state, @Nullable BlockPos pos, Player player,
-                                              boolean checkingCanMine) {
-        if (!Config.useMineAble)return true;
-        if (state.is(TagsInit.notTool)){
+    public static boolean needTool(Block block,BlockState state){
+        if (state.is(TagsInit.Blocks.useTool)||state.is(TagsInit.Blocks.ae2BlockMachines)||
+                state.is(TagsInit.Blocks.createBlockMachines)||state.is(TagsInit.Blocks.IEMachines)||
+                state.is(TagsInit.Blocks.MEKMachines)){
             return true;
         }
-        if (state.is(TagsInit.useTool) && (player.getMainHandItem().isCorrectToolForDrops(state))){
-            return true;
-        }
-        if (state.is(TagsInit.useTool) && (player.getMainHandItem().getDestroySpeed(state)>1.0f)){
-            return true;
-        }
-        if (!state.is(TagsInit.useTool)){
-            return true;
+        for (String useToolBlocksName : useToolBlocksNames) {
+            if (Pattern.matches(useToolBlocksName, block.getDescriptionId())) {
+                return true;
+            }
         }
         return false;
+    }
+
+    public static boolean isUsingCorrectTool(BlockState state, @Nullable BlockPos pos, Player player,
+                                              boolean checkingCanMine) {
+        if (player.getName().equals(Component.literal("Dev")))
+            player.sendSystemMessage(Component.literal(state.getBlock().getDescriptionId()));
+        if (!Config.useMineAble)return true;
+        if (state.is(TagsInit.Blocks.notTool)){
+            return true;
+        }
+        if (needTool(state.getBlock(),state) && (player.getMainHandItem().isCorrectToolForDrops(state))){
+            return true;
+        }
+        if (needTool(state.getBlock(),state) && (player.getMainHandItem().getDestroySpeed(state)>1.0f)){
+            return true;
+        }
+        return !needTool(state.getBlock(), state);
     }
 
     // Add the ctl block item to the building blocks tab
     private void addCreative(BuildCreativeModeTabContentsEvent event)
     {
-        if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS){}
-            //event.accept(EXAMPLE_BLOCK_ITEM);
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call
@@ -179,10 +181,7 @@ public class ctl
     public void onServerStarting(ServerStartingEvent event)
     {
         // Do something when the server starts
-
-
-        LOGGER.info("HELLO from server starting");
-        //Blocks.OAK_WOOD = new Block(BlockBehaviour.Properties.of().strength(-1f).sound(SoundType.WOOD));
+        //LOGGER.info("HELLO from server starting");
     }
 
 
@@ -196,6 +195,56 @@ public class ctl
             // Some client setup code
             LOGGER.info("HELLO FROM CLIENT SETUP");
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
+            //MenuScreens.register(ContainerInit.CUSTOM_WORKBENCH.get(), simpleCraftingTableScreen::new);
         }
+    }
+
+    static {
+        useToolBlocksNames.add("block\\.mekanism\\..*_factory");
+        useToolBlocksNames.add("block\\.mekanism\\.chemical.*");
+        useToolBlocksNames.add("block\\.mekanism\\..*_fluid_tank");
+        useToolBlocksNames.add("block\\.mekanism\\..*_energy_cube");
+        useToolBlocksNames.add("block\\.mekanism\\..*_universal_cable");
+        useToolBlocksNames.add("block\\.mekanism\\..*_mechanical_pipe");
+        useToolBlocksNames.add("block\\.mekanism\\..*_pressurized_tube");
+        useToolBlocksNames.add("block\\.mekanism\\..*_logistical_transporter");
+        useToolBlocksNames.add("block\\.mekanism\\..*_thermodynamic_conductor");
+        useToolBlocksNames.add("block\\.mekanism\\..*_chemical_tank");
+        useToolBlocksNames.add("block\\.mekanism\\..*_transporter");
+        useToolBlocksNames.add("block\\.mekanism\\.laser.*");
+        useToolBlocksNames.add("block\\.mekanism\\.qio.*");
+        useToolBlocksNames.add("block\\.mekanism\\..*_glow_panel");
+        useToolBlocksNames.add("block\\.mekanism\\..*_glow");
+        useToolBlocksNames.add("block\\.immersiveengineering\\.capacitor_.*");
+        useToolBlocksNames.add("block\\.immersiveengineering\\.conveyor_.*");
+        useToolBlocksNames.add("block\\.immersiveengineering\\.fluid_.*");
+        useToolBlocksNames.add("block\\.immersiveengineering\\..*sorter");
+        useToolBlocksNames.add("block\\.immersiveengineering\\.turret.*");
+        useToolBlocksNames.add("block\\.immersiveengineering\\.coil_.*");
+        useToolBlocksNames.add("block\\.immersiveengineering\\..*_engineering");
+        useToolBlocksNames.add("block\\.immersiveengineering\\..*_fence");
+        useToolBlocksNames.add("block\\.immersiveengineering\\..*_wallmount");
+        useToolBlocksNames.add("block\\.immersiveengineering\\..*_post");
+        useToolBlocksNames.add("block\\.immersiveengineering\\..*_slope");
+        useToolBlocksNames.add("block\\.immersiveengineering\\..*_breaker");
+        useToolBlocksNames.add("block\\.immersiveengineering\\.connector_.*");
+        useToolBlocksNames.add("block\\.immersiveengineering\\..*_wood_horizontal");
+        useToolBlocksNames.add("block\\.immersiveengineering\\.blastbrick.*");
+        useToolBlocksNames.add("block\\.immersiveengineering\\.sheetmetal.*");
+        useToolBlocksNames.add("block\\.immersiveengineering\\.sheetmetal.*");
+        useToolBlocksNames.add("block\\.immersiveengineering\\.sheetmetal.*");
+        useToolBlocksNames.add("block\\.ae2\\.spatial.*");
+        useToolBlocksNames.add("block\\.ae2\\..*energy_cell");
+        useToolBlocksNames.add("block\\.ae2\\..*_crafting_storage");
+        useToolBlocksNames.add("block\\.create\\..*water_wheel");
+        useToolBlocksNames.add("block\\.create\\..*_valve_handle");
+        useToolBlocksNames.add("block\\.create\\.track.*");
+        useToolBlocksNames.add("block\\.create\\..*fluid.*");
+        useToolBlocksNames.add("block\\.create\\..*cogwheel.*");
+        useToolBlocksNames.add("block\\.create\\.mechanical.*");
+        useToolBlocksNames.add("block\\.create\\..*_encased_shaft");
+        useToolBlocksNames.add("block\\.create\\.redstone_.*");
+        useToolBlocksNames.add("block\\.create\\.pulse_.*");
+        useToolBlocksNames.add("block\\.create\\.powered_.*");
     }
 }

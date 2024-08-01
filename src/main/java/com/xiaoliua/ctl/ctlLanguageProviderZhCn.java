@@ -20,5 +20,6 @@ public class ctlLanguageProviderZhCn extends LanguageProvider {
         this.add(ItemInit.UNFIRED_CLAY_SWORD.get(),"未成型的粘土剑");
         this.add(ItemInit.UNFIRED_CLAY_HOE.get(),"未成型的粘土锄");
         this.add(ItemInit.UNFIRED_CLAY_AXE.get(),"未成型的粘土斧");
+        this.add(ItemInit.RUBY_BLOCK.get(),"干燥架");
     }
 }

@@ -7,6 +7,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.tags.BlockTags;
 import net.minecraftforge.common.data.BlockTagsProvider;
 import net.minecraftforge.common.data.ExistingFileHelper;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.concurrent.CompletableFuture;
@@ -17,7 +18,7 @@ public class ctlBlockTagProvider extends BlockTagsProvider {
     }
 
     @Override
-    protected void addTags(HolderLookup.Provider provider) {
+    protected void addTags(HolderLookup.@NotNull Provider provider) {
         tag(BlockTags.MINEABLE_WITH_AXE)
                 .add(BlockInit.HAYRACK_BLOCK.get());
     }
