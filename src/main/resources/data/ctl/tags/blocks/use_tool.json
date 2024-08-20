@@ -54,6 +54,8 @@
     "#forge:stone",
     "#forge:sandstone",
     "#forge:storage_blocks",
-    "#minecraft:fences"
+    "#minecraft:fences",
+    "#forge:cobblestone",
+    "#minecraft:mineable/pickaxe"
   ]
 }

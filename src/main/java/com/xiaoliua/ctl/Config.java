@@ -1,10 +1,13 @@
 package com.xiaoliua.ctl;
 
+import com.xiaoliua.ctl.Items.ItemInit;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.loot.LootTableProvider;
 import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraftforge.common.ForgeConfigSpec;
@@ -16,6 +19,7 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -26,6 +30,22 @@ import java.util.stream.Collectors;
 @Mod.EventBusSubscriber(modid = ctl.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class Config
 {
+    private static final String[] itemsBySCT = {
+            "ctl:unfired_clay_shovel",
+            "ctl:unfired_clay_axe",
+            "ctl:unfired_clay_pickaxe",
+            "ctl:unfired_clay_shovel",
+            "ctl:unfired_clay_sword",
+            "ctl:rope",
+            "ctl:fibre",
+            "ctl:hayrack",
+            "ctl:pottery_shovel",
+            "ctl:pottery_axe",
+            "ctl:pottery_pickaxe",
+            "ctl:pottery_shovel",
+            "ctl:pottery_sword"
+    };
+
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder()
             .comment("Creative Trees&Leaves settings")
             .push("general");
@@ -55,6 +75,14 @@ public class Config
             .comment("A list of items to log on common setup.")
             .defineListAllowEmpty("items", List.of("minecraft:iron_ingot"), Config::validateItemName);
 
+    private static final ForgeConfigSpec.ConfigValue<Boolean> ALLOW_WOODEN = BUILDER
+            .comment("allow wooden tools")
+            .define("allowWooden",true);
+
+    private static final ForgeConfigSpec.ConfigValue<List<? extends String>> CAN_CRAFT_WITH_SIMPLE_CRAFTING_TABLE = BUILDER
+            .comment("can craft with simple crafting table's  items")
+            .define("craftingBySimpleCraftingTable", List.of(itemsBySCT));
+
     static final ForgeConfigSpec SPEC = BUILDER.build();
 
     public static boolean logDirtBlock;
@@ -63,6 +91,8 @@ public class Config
     public static Set<Item> items;
     public static int waitTime;
     public static boolean useMineAble;
+    public static boolean allowWooden;
+    public static Set<Item> SCTItems;
 
     private static boolean validateItemName(final Object obj)
     {
@@ -77,6 +107,11 @@ public class Config
         magicNumberIntroduction = MAGIC_NUMBER_INTRODUCTION.get();
         waitTime = WAITING_TIME.get();
         useMineAble = USE_MINE_ABLE.get();
+        allowWooden = ALLOW_WOODEN.get();
+        SCTItems = CAN_CRAFT_WITH_SIMPLE_CRAFTING_TABLE.get().stream()
+                .map(itemName -> BuiltInRegistries.ITEM.get(
+                        new ResourceLocation(itemName)))
+                .collect(Collectors.toSet());
 
         // convert the list of strings into a set of items
         items = ITEM_STRINGS.get().stream()

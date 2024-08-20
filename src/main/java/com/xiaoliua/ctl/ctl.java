@@ -10,12 +10,16 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -28,6 +32,7 @@ import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.level.BlockEvent;
+import net.minecraftforge.event.level.ExplosionEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -39,17 +44,16 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraftforge.registries.*;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.system.Platform;
 import org.slf4j.Logger;
 import org.stringtemplate.v4.ST;
 
+import javax.swing.text.FieldView;
 import javax.swing.text.html.HTML;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.lang.reflect.Field;
+import java.util.*;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -86,14 +90,24 @@ public class ctl
                 output.accept(ItemInit.SIMPLE_CRAFTING_TABLE_BLOCK.get());
                 output.accept(ItemInit.PLIABLE_BRANCH.get());
                 output.accept(ItemInit.DRY_PLIABLE_BRANCH.get());
+                output.accept(ItemInit.UNASSEMBLED_POTTERY_AXE.get());
+                output.accept(ItemInit.UNASSEMBLED_POTTERY_HOE.get());
+                output.accept(ItemInit.UNASSEMBLED_POTTERY_SWORD.get());
+                output.accept(ItemInit.UNASSEMBLED_POTTERY_PICKAXE.get());
+                output.accept(ItemInit.UNASSEMBLED_POTTERY_SHOVEL.get());
+                output.accept(ItemInit.POTTERY_PICKAXE.get());
+                output.accept(ItemInit.POTTERY_AXE.get());
+                output.accept(ItemInit.POTTERY_HOE.get());
+                output.accept(ItemInit.POTTERY_SHOVEL.get());
+                output.accept(ItemInit.POTTERY_SWORD.get());
             })
             .title(Component.literal("Creative Trees & Leaves")).build());
     //Create a List to match the blocks
     public static final List<String> useToolBlocksNames = new ArrayList<>();
     public ctl()
     {
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         // Register the commonSetup method for mod loading
         modEventBus.addListener(this::commonSetup);
 
@@ -139,9 +153,7 @@ public class ctl
                 //}
             }
         });
-
         // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event)
@@ -163,7 +175,7 @@ public class ctl
     public static boolean needTool(Block block,BlockState state){
         if (state.is(TagsInit.Blocks.useTool)||state.is(TagsInit.Blocks.ae2BlockMachines)||
                 state.is(TagsInit.Blocks.createBlockMachines)||state.is(TagsInit.Blocks.IEMachines)||
-                state.is(TagsInit.Blocks.MEKMachines)){
+                state.is(TagsInit.Blocks.MEKMachines) || state.is(TagsInit.Blocks.FarmersdelightUseTool)){
             return true;
         }
         for (String useToolBlocksName : useToolBlocksNames) {
@@ -196,14 +208,25 @@ public class ctl
     {
     }
 
+    @SubscribeEvent
+    public void kaboom(ExplosionEvent.Detonate event) {
+        LOGGER.info("Kaboom! Something just blew up in {}!", event.getLevel());
+    }
+
     // You can use SubscribeEvent and let the Event Bus discover methods to call
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event)
     {
+        RecipeManager recipeManager = event.getServer().getRecipeManager();
+        ResourceLocation woodenAxeRecipeId = new ResourceLocation("minecraft", "wooden_axe");
+//        Optional<? extends Recipe<?>> recipeOptional = manager.byKey(woodenAxeRecipeId);
+//        if (recipeOptional.isPresent()){
+//            Map<ResourceLocation, Recipe<?>> recipeMap = manager.getRecipes();
+//            recipeMap.remove(woodenAxeRecipeId);
+//        }
         // Do something when the server starts
         //LOGGER.info("HELLO from server starting");
     }
-
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
     @Mod.EventBusSubscriber(modid = MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)

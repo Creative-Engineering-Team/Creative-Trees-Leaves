@@ -7,6 +7,7 @@
     "minecraft:grass",
     "minecraft:podzol",
     "minecraft:coarse_dirt",
-    "#minecraft:sand"
+    "#minecraft:sand",
+    "minecraft:shulker_box"
   ]
 }

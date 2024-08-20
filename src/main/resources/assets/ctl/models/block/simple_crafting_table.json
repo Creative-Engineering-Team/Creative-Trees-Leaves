@@ -1,22 +1,12 @@
 {
-	"credit": "Made with Blockbench",
-	"texture_size": [64, 64],
+	"parent": "minecraft:block/cube",
 	"textures": {
-		"0": "ctl:block/simple_crafting_table",
-		"particle": "ctl:block/simple_crafting_table"
-	},
-	"elements": [
-		{
-			"from": [0, 0, 0],
-			"to": [16, 16, 16],
-			"faces": {
-				"north": {"uv": [0, 0, 4, 4], "texture": "#0"},
-				"east": {"uv": [0, 4, 4, 8], "texture": "#0"},
-				"south": {"uv": [4, 0, 8, 4], "texture": "#0"},
-				"west": {"uv": [4, 4, 8, 8], "texture": "#0"},
-				"up": {"uv": [4, 12, 0, 8], "texture": "#0"},
-				"down": {"uv": [12, 0, 8, 4], "texture": "#0"}
-			}
-		}
-	]
+		"down": "ctl:block/crafting_table_bottom",
+		"east": "ctl:block/crafting_table_side",
+		"north": "ctl:block/crafting_table_front",
+		"particle": "ctl:block/crafting_table_front",
+		"south": "ctl:block/crafting_table_side",
+		"up": "ctl:block/crafting_table_top",
+		"west": "ctl:block/crafting_table_front"
+	}
 }

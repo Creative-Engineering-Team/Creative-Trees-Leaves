@@ -16,6 +16,7 @@ public class TagsInit {
         public static final TagKey<Block> IEMachines = create("ie_machines");
         public static final TagKey<Block> MEKMachines = create("mek_machines");
         public static final TagKey<Block> Leaves = create("leaves");
+        public static final TagKey<Block> FarmersdelightUseTool = create("farmersdelight_use_tool");
         private static TagKey<Block> create(String id)
         {
             return TagKey.create(BuiltInRegistries.BLOCK.key(), new ResourceLocation(ctl.MODID, id));

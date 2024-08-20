@@ -15,7 +15,7 @@ public class ctlLanguageProviderZhCn extends LanguageProvider {
         this.add(ItemInit.LEAF.get(),"树叶");
         this.add(ItemInit.DRY_LEAF.get(),"干燥树叶");
         this.add(ItemInit.FIBRE.get(),"纤维");
-        this.add(ItemInit.ROPE.get(),"绳子");
+        this.add(ItemInit.ROPE.get(),"粗制绳子");
         this.add(ItemInit.UNFIRED_CLAY_PICKAXE.get(),"未成型的粘土稿");
         this.add(ItemInit.UNFIRED_CLAY_SHOVEL.get(),"未成型的粘土铲");
         this.add(ItemInit.UNFIRED_CLAY_SWORD.get(),"未成型的粘土剑");
@@ -25,5 +25,15 @@ public class ctlLanguageProviderZhCn extends LanguageProvider {
         this.add(ItemInit.PLIABLE_BRANCH.get(),"枝条");
         this.add(ItemInit.DRY_PLIABLE_BRANCH.get(),"干燥枝条");
         this.add(ItemInit.SIMPLE_CRAFTING_TABLE_BLOCK.get(), "简易工作台");
+        this.add(ItemInit.UNASSEMBLED_POTTERY_PICKAXE.get(), "陶土镐头");
+        this.add(ItemInit.UNASSEMBLED_POTTERY_SWORD.get(), "陶土剑刃");
+        this.add(ItemInit.UNASSEMBLED_POTTERY_HOE.get(), "陶土锄头");
+        this.add(ItemInit.UNASSEMBLED_POTTERY_SHOVEL.get(), "陶土锹刃");
+        this.add(ItemInit.UNASSEMBLED_POTTERY_AXE.get(), "陶土斧头");
+        this.add(ItemInit.POTTERY_PICKAXE.get(), "陶土镐");
+        this.add(ItemInit.POTTERY_SWORD.get(), "陶剑");
+        this.add(ItemInit.POTTERY_HOE.get(), "陶土锄");
+        this.add(ItemInit.POTTERY_SHOVEL.get(), "陶土锹");
+        this.add(ItemInit.POTTERY_AXE.get(), "陶土斧");
     }
 }

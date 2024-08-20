@@ -26,6 +26,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class simpleCraftingTableBlock extends Block {
@@ -34,18 +35,21 @@ public class simpleCraftingTableBlock extends Block {
         super(Properties.copy(Blocks.CRAFTING_TABLE));
     }
     @Override
-    public InteractionResult use(BlockState p_60503_, Level p_60504_, BlockPos p_60505_, Player p_60506_, InteractionHand p_60507_, BlockHitResult p_60508_) {
+    public InteractionResult use(BlockState p_60503_, Level p_60504_, @NotNull BlockPos p_60505_, Player p_60506_, InteractionHand p_60507_, BlockHitResult p_60508_) {
         if (!p_60504_.isClientSide) {
-//            p_60506_.openMenu(new SimpleMenuProvider((a,b,c) ->{
-//                return new CraftingMenu(a,b,ContainerLevelAccess.create(p_60504_,p_60505_));
-//            },Component.literal("t")));
-            NetworkHooks.openScreen((ServerPlayer) p_60506_,new SimpleMenuProvider(
-                    (id, inventory, playerEntity) -> new simpleCraftingTableMenu(id, inventory),
-                    Component.translatable("container.crafting")
-            ),p_60505_);
+            p_60506_.openMenu(new SimpleMenuProvider((a,b,c) -> new simpleCraftingTableMenu(a,b),
+                    Component.translatable("container.crafting")));
+            p_60506_.awardStat(Stats.INTERACT_WITH_CRAFTING_TABLE);
+//            NetworkHooks.openScreen((ServerPlayer) p_60506_,new SimpleMenuProvider(
+//                    (id, inventory, playerEntity) -> new simpleCraftingTableMenu(id, inventory,
+//                            ContainerLevelAccess.create(p_60504_,p_60505_)),
+//                    Component.translatable("container.crafting")
+//            ),p_60505_);
+            return InteractionResult.CONSUME;
+        } else {
             return InteractionResult.SUCCESS;
         }
-        return super.use(p_60503_,p_60504_,p_60505_,p_60506_,p_60507_,p_60508_);
+        //return super.use(p_60503_,p_60504_,p_60505_,p_60506_,p_60507_,p_60508_);
     }
 
     @Nullable

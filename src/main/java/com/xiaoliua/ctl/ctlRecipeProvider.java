@@ -4,6 +4,7 @@ import com.xiaoliua.ctl.Blocks.BlockInit;
 import com.xiaoliua.ctl.Items.ItemInit;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
+import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.item.Items;
 import net.minecraftforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
@@ -52,7 +53,6 @@ public class ctlRecipeProvider extends RecipeProvider {
                 .define('a',ItemInit.FIBRE.get())
                 .unlockedBy("has_fibre",has(ItemInit.FIBRE.get()))
                 .save(p_251297_);
-
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ItemInit.UNFIRED_CLAY_AXE.get())
                 .pattern("aa ")
                 .pattern("a  ")
@@ -101,6 +101,56 @@ public class ctlRecipeProvider extends RecipeProvider {
                 .define('t', Items.COPPER_INGOT)
                 .define('w', TagsInit.Items.Planks)
                 .unlockedBy("has_iron_ingot",has(Items.IRON_INGOT))
+                .save(p_251297_);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC,ItemInit.POTTERY_SHOVEL.get())
+                .pattern("a")
+                .pattern("b")
+                .pattern("c")
+                .define('a',ItemInit.UNASSEMBLED_POTTERY_SHOVEL.get())
+                .define('b',ItemInit.ROPE.get())
+                .define('c',Items.STICK)
+                .unlockedBy("has_rope",has(ItemInit.ROPE.get()))
+                .save(p_251297_);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC,ItemInit.POTTERY_AXE.get())
+                .pattern("a")
+                .pattern("b")
+                .pattern("c")
+                .define('a',ItemInit.UNASSEMBLED_POTTERY_AXE.get())
+                .define('b',ItemInit.ROPE.get())
+                .define('c',Items.STICK)
+                .unlockedBy("has_rope",has(ItemInit.ROPE.get()))
+                .save(p_251297_);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC,ItemInit.POTTERY_SWORD.get())
+                .pattern("a")
+                .pattern("b")
+                .pattern("c")
+                .define('a',ItemInit.UNASSEMBLED_POTTERY_SWORD.get())
+                .define('b',ItemInit.ROPE.get())
+                .define('c',Items.STICK)
+                .unlockedBy("has_rope",has(ItemInit.ROPE.get()))
+                .save(p_251297_);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC,ItemInit.POTTERY_HOE.get())
+                .pattern("a")
+                .pattern("b")
+                .pattern("c")
+                .define('a',ItemInit.UNASSEMBLED_POTTERY_HOE.get())
+                .define('b',ItemInit.ROPE.get())
+                .define('c',Items.STICK)
+                .unlockedBy("has_rope",has(ItemInit.ROPE.get()))
+                .save(p_251297_);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC,ItemInit.POTTERY_PICKAXE.get())
+                .pattern("a")
+                .pattern("b")
+                .pattern("c")
+                .define('a',ItemInit.UNASSEMBLED_POTTERY_PICKAXE.get())
+                .define('b',ItemInit.ROPE.get())
+                .define('c',Items.STICK)
+                .unlockedBy("has_rope",has(ItemInit.ROPE.get()))
                 .save(p_251297_);
     }
 }
