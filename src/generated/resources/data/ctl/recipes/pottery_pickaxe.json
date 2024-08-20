@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "a": {
+      "item": "ctl:unassembled_pottery_pickaxe"
+    },
+    "b": {
+      "item": "ctl:rope"
+    },
+    "c": {
+      "item": "minecraft:stick"
+    }
+  },
+  "pattern": [
+    "a",
+    "b",
+    "c"
+  ],
+  "result": {
+    "item": "ctl:pottery_pickaxe"
+  },
+  "show_notification": true
+}
