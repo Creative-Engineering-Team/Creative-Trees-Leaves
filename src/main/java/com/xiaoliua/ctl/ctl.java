@@ -27,6 +27,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.WoodType;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
@@ -45,7 +46,9 @@ import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.*;
+import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.Version;
 import org.lwjgl.system.Platform;
 import org.slf4j.Logger;
 import org.stringtemplate.v4.ST;
@@ -104,9 +107,12 @@ public class ctl
             .title(Component.literal("Creative Trees & Leaves")).build());
     //Create a List to match the blocks
     public static final List<String> useToolBlocksNames = new ArrayList<>();
+
+    public static final ArtifactVersion version = ModLoadingContext.get().getActiveContainer().getModInfo()
+            .getVersion();
     public ctl()
     {
-
+        LOGGER.info("Welcome use ctl,version: "+version.toString() + " by xiaoliu_a&mc100212");
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         // Register the commonSetup method for mod loading
         modEventBus.addListener(this::commonSetup);
@@ -154,6 +160,7 @@ public class ctl
             }
         });
         // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 
     private void commonSetup(final FMLCommonSetupEvent event)
@@ -164,7 +171,11 @@ public class ctl
     public static float modifyBreakSpeed(Player player, BlockState state, @Nullable BlockPos pos, float speed)
     {
         //if (player.getName().equals(Component.literal("Dev")))return 114514;
-        return isUsingCorrectToolToMine(state, pos, player) ? speed : 0;
+        if (isUsingCorrectToolToMine(state, pos, player)){
+            return speed;
+        }
+        player.sendSystemMessage(Component.literal("tool not correct"));
+        return 0;
     }
 
     public static boolean isUsingCorrectToolToMine(BlockState state, @Nullable BlockPos pos, Player player)
@@ -176,13 +187,16 @@ public class ctl
         if (state.is(TagsInit.Blocks.useTool)||state.is(TagsInit.Blocks.ae2BlockMachines)||
                 state.is(TagsInit.Blocks.createBlockMachines)||state.is(TagsInit.Blocks.IEMachines)||
                 state.is(TagsInit.Blocks.MEKMachines) || state.is(TagsInit.Blocks.FarmersdelightUseTool)){
+            LOGGER.debug("need tool,modified");
             return true;
         }
         for (String useToolBlocksName : useToolBlocksNames) {
             if (Pattern.matches(useToolBlocksName, block.getDescriptionId())) {
+                LOGGER.debug("need tool,modified");
                 return true;
             }
         }
+        LOGGER.debug("another1,modified");
         return false;
     }
 
@@ -190,14 +204,20 @@ public class ctl
                                               boolean checkingCanMine) {
         if (player.getName().equals(Component.literal("Dev")))
             player.sendSystemMessage(Component.literal(state.getBlock().getDescriptionId()));
-        if (!Config.useMineAble)return true;
+        if (!Config.useMineAble) {
+            LOGGER.debug("not use MineAble,pass");
+            return true;
+        }
         if (state.is(TagsInit.Blocks.notTool)){
+            LOGGER.debug("block not use MineAble,pass");
             return true;
         }
         if (needTool(state.getBlock(),state) && (player.getMainHandItem().isCorrectToolForDrops(state))){
+            LOGGER.debug("correct tool,pass");
             return true;
         }
         if (needTool(state.getBlock(),state) && (player.getMainHandItem().getDestroySpeed(state)>1.0f)){
+            LOGGER.debug("another,pass");
             return true;
         }
         return !needTool(state.getBlock(), state);

@@ -108,6 +108,9 @@ public class Config
         waitTime = WAITING_TIME.get();
         useMineAble = USE_MINE_ABLE.get();
         allowWooden = ALLOW_WOODEN.get();
+        String ops = logDirtBlock+" "+magicNumber+" "+magicNumberIntroduction+" "+waitTime+" "+
+                useMineAble+" "+allowWooden;
+        ctl.LOGGER.debug("Configs: {}", ops);
         SCTItems = CAN_CRAFT_WITH_SIMPLE_CRAFTING_TABLE.get().stream()
                 .map(itemName -> BuiltInRegistries.ITEM.get(
                         new ResourceLocation(itemName)))
