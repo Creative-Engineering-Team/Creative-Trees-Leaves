@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class hayrackBlockEntity extends BlockEntity {
     private int NeedTick = 0;
     private int LeafNum = 0;
-    private hayrackPuts puts;
+    private String puts;
     public hayrackBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
         super(BlockEntityInit.HAYRACK_BLOCK_ENTITY.get(), p_155229_, p_155230_);
     }
@@ -38,18 +38,18 @@ public class hayrackBlockEntity extends BlockEntity {
     public void putLeaf(int leafNum){
         NeedTick = Config.waitTime;
         LeafNum = leafNum;
-        puts = hayrackPuts.leaf;
+        puts = "leaf";
         setChanged();
     }
 
     public void putBranch(int branchNum){
         NeedTick = Config.waitTime;
         LeafNum = branchNum;
-        puts = hayrackPuts.pliableBranch;
+        puts = "pliableBranch";
         setChanged();
     }
 
-    public hayrackPuts putsType(){
+    public String  putsType(){
         return puts;
     }
 
@@ -71,8 +71,8 @@ public class hayrackBlockEntity extends BlockEntity {
     public void load(CompoundTag p_155245_) {
         NeedTick = p_155245_.getInt("need_tick");
         LeafNum = p_155245_.getInt("leaf_num");
-        puts = !p_155245_.getString("puts_type").equals("leaf") && !p_155245_.getString("puts_type").equals("pliableBranch") ? null : hayrackPuts.valueOf(p_155245_.getString("puts_type"));
-        super.load(p_155245_);
+        puts = p_155245_.getString("puts_type");
+    super.load(p_155245_);
     }
 
     @Override
@@ -80,6 +80,6 @@ public class hayrackBlockEntity extends BlockEntity {
         super.saveAdditional(p_187471_);
         p_187471_.putInt("need_tick",NeedTick);
         p_187471_.putInt("leaf_num",LeafNum);
-        p_187471_.putString("puts_type",puts.toString());
+        p_187471_.putString("puts_type",puts);
     }
 }

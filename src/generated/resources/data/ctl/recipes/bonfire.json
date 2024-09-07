@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "g": {
+      "item": "ctl:dry_pliable_branch"
+    },
+    "s": {
+      "item": "minecraft:stick"
+    }
+  },
+  "pattern": [
+    " g ",
+    "sgs",
+    "s s"
+  ],
+  "result": {
+    "item": "ctl:bonfire"
+  },
+  "show_notification": true
+}

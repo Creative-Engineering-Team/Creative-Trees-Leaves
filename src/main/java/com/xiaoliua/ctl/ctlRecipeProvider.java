@@ -6,6 +6,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 
@@ -103,6 +104,15 @@ public class ctlRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_iron_ingot",has(Items.IRON_INGOT))
                 .save(p_251297_);
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC,ItemInit.BONFIRE_BLOCK_ITEM.get())
+                .pattern(" g ")
+                .pattern("sgs")
+                .pattern("s s")
+                .define('g',ItemInit.DRY_PLIABLE_BRANCH.get())
+                .define('s',Items.STICK)
+                .unlockedBy("has_dry_pliable_branch",has(ItemInit.DRY_PLIABLE_BRANCH.get()))
+                .save(p_251297_);
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC,ItemInit.POTTERY_SHOVEL.get())
                 .pattern("a")
                 .pattern("b")
@@ -151,6 +161,18 @@ public class ctlRecipeProvider extends RecipeProvider {
                 .define('b',ItemInit.ROPE.get())
                 .define('c',Items.STICK)
                 .unlockedBy("has_rope",has(ItemInit.ROPE.get()))
+                .save(p_251297_);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC,ItemInit.SIMPLE_FLINT_AND_STEEL.get())
+                .pattern("s ")
+                .pattern(" s")
+                .define('s',Items.FLINT)
+                .unlockedBy("has_flint",has(Items.FLINT))
+                .save(p_251297_);
+
+        SimpleCookingRecipeBuilder.campfireCooking(Ingredient.of(ItemInit.UNFIRED_CLAY_AXE.get()),RecipeCategory.MISC,
+                        ItemInit.UNASSEMBLED_POTTERY_AXE.get(), 0f,1200)
+                .unlockedBy("has_clay_ball",has(Items.CLAY_BALL))
                 .save(p_251297_);
     }
 }

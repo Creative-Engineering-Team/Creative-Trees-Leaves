@@ -21,5 +21,7 @@
   "item.ctl.unfired_clay_hoe": "未成型的粘土锄",
   "item.ctl.unfired_clay_pickaxe": "未成型的粘土稿",
   "item.ctl.unfired_clay_shovel": "未成型的粘土铲",
-  "item.ctl.unfired_clay_sword": "未成型的粘土剑"
+  "item.ctl.unfired_clay_sword": "未成型的粘土剑",
+  "text.ctl.DurabilityPenalty": "这个物品合成的物品将损耗10点耐久",
+  "text.ctl.NotDurabilityPenalty": "这是个正常的物品,用它合成的物品耐久正常"
 }

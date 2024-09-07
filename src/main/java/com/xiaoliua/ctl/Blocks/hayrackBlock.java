@@ -29,7 +29,9 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-    public class hayrackBlock extends BaseEntityBlock{
+import java.util.Objects;
+
+public class hayrackBlock extends BaseEntityBlock{
     //public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty HaveLeaf = BooleanProperty.create("have_leaf");
     public static final BooleanProperty LeafOK = BooleanProperty.create("leaf_ok");
@@ -107,7 +109,7 @@ import org.jetbrains.annotations.Nullable;
             if (!p_60506_.getMainHandItem().is(Items.AIR)) return InteractionResult.PASS;
             var hayrackBlockEntity = (com.xiaoliua.ctl.Blocks.hayrackBlockEntity)p_60504_.getBlockEntity(p_60505_);
             //p_60506_.setItemSlot(EquipmentSlot.MAINHAND,new ItemStack(ItemInit.DRY_LEAF.get(),64));
-            if (hayrackBlockEntity.putsType() == hayrackPuts.leaf) {
+            if (Objects.equals(hayrackBlockEntity.putsType(), "leaf")) {
                 p_60506_.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ItemInit.DRY_LEAF.get(), hayrackBlockEntity.getLeafNum()));
             }else {
                 p_60506_.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ItemInit.DRY_PLIABLE_BRANCH.get(), hayrackBlockEntity.getLeafNum()));

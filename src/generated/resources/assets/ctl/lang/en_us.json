@@ -21,5 +21,7 @@
   "item.ctl.unfired_clay_hoe": "Unfired Clay Hoe",
   "item.ctl.unfired_clay_pickaxe": "Unfired Clay Pickaxe",
   "item.ctl.unfired_clay_shovel": "Unfired Clay Shovel",
-  "item.ctl.unfired_clay_sword": "Unfired Clay Sword"
+  "item.ctl.unfired_clay_sword": "Unfired Clay Sword",
+  "text.ctl.DurabilityPenalty": "The combined item of this item will consume 10 points of durability",
+  "text.ctl.NotDurabilityPenalty": "This is a normal item, and the item synthesized with it will last normally"
 }

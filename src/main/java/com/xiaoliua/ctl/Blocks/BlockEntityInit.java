@@ -15,4 +15,8 @@ public class BlockEntityInit {
             BLOCK_ENTITY_TYPES.register("hayrack_block_entity",()->
                     BlockEntityType.Builder.of(hayrackBlockEntity::new,
                     BlockInit.HAYRACK_BLOCK.get()).build(null));
+    public static final Supplier<BlockEntityType<bonfireBlockEntity>> BONFIRE_BLOCK_ENTITY =
+            BLOCK_ENTITY_TYPES.register("bonfire_block_entity",()->
+                    BlockEntityType.Builder.of(bonfireBlockEntity::new,
+                            BlockInit.BONFIRE_BLOCK.get()).build(null));
 }

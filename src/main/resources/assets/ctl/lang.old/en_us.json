@@ -8,5 +8,6 @@
   "item.ctl.unfired_clay_hoe": "Unfired clay hoe",
   "item.ctl.unfired_clay_pickaxe": "Unfired clay pickaxe",
   "item.ctl.unfired_clay_shovel": "Unfired clay shovel",
-  "item.ctl.unfired_clay_sword": "Unfired clay sword"
+  "item.ctl.unfired_clay_sword": "Unfired clay sword",
+  "text.ctl.DurabilityPenalty": "The combined item of this item will consume 10 points of durability"
 }

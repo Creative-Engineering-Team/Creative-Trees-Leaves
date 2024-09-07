@@ -1,0 +1,6 @@
+{
+  "variants": {
+      "lit=true":{"model": "ctl:block/bonfire_lit"},
+      "lit=false":{"model": "ctl:block/bonfire"}
+  }
+}

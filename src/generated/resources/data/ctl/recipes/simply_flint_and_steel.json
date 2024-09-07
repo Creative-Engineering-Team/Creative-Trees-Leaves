@@ -1,0 +1,17 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "s": {
+      "item": "minecraft:flint"
+    }
+  },
+  "pattern": [
+    "s ",
+    " s"
+  ],
+  "result": {
+    "item": "ctl:simply_flint_and_steel"
+  },
+  "show_notification": true
+}

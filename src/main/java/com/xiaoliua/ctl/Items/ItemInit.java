@@ -5,7 +5,9 @@ import com.xiaoliua.ctl.ctl;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.decoration.Painting;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.registries.DeferredRegister;
 
 import java.util.function.Supplier;
@@ -47,21 +49,27 @@ public class ItemInit {
     public static final Supplier<Item> UNASSEMBLED_POTTERY_PICKAXE = ITEMS.register("unassembled_pottery_pickaxe",
             ()-> new unassembledPotteryPickaxe(new Item.Properties()));
     public static final Supplier<Item> UNASSEMBLED_POTTERY_SWORD = ITEMS.register("unassembled_pottery_sword",
-            ()-> new unassembledPotteryPickaxe(new Item.Properties()));
+            ()-> new unassembledPotterySword(new Item.Properties()));
     public static final Supplier<Item> UNASSEMBLED_POTTERY_HOE = ITEMS.register("unassembled_pottery_hoe",
-            ()-> new unassembledPotteryPickaxe(new Item.Properties()));
+            ()-> new unassembledPotteryHoe(new Item.Properties()));
     public static final Supplier<Item> UNASSEMBLED_POTTERY_SHOVEL = ITEMS.register("unassembled_pottery_shovel",
-            ()-> new unassembledPotteryPickaxe(new Item.Properties()));
+            ()-> new unassembledPotteryShovel(new Item.Properties()));
     public static final Supplier<Item> UNASSEMBLED_POTTERY_AXE = ITEMS.register("unassembled_pottery_axe",
-            ()-> new unassembledPotteryPickaxe(new Item.Properties()));
+            ()-> new unassembledPotteryAxe(new Item.Properties()));
     public static final Supplier<Item> POTTERY_PICKAXE = ITEMS.register("pottery_pickaxe",
-            ()-> new potteryPickaxe(new Item.Properties()));
+            ()-> new potteryPickaxe(ctl.copyPropertiesFrom(Items.WOODEN_PICKAXE)));
     public static final Supplier<Item> POTTERY_AXE = ITEMS.register("pottery_axe",
-            ()-> new potteryAxe(new Item.Properties()));
+            ()-> new potteryAxe(ctl.copyPropertiesFrom(Items.WOODEN_AXE)));
     public static final Supplier<Item> POTTERY_HOE = ITEMS.register("pottery_hoe",
-            ()-> new potteryHoe(new Item.Properties()));
+            ()-> new potteryHoe(ctl.copyPropertiesFrom(Items.WOODEN_HOE)));
     public static final Supplier<Item> POTTERY_SHOVEL = ITEMS.register("pottery_shovel",
-            ()-> new potteryShovel(new Item.Properties()));
+            ()-> new potteryShovel(ctl.copyPropertiesFrom(Items.WOODEN_SHOVEL)));
     public static final Supplier<Item> POTTERY_SWORD = ITEMS.register("pottery_sword",
-            ()-> new potterySword(new Item.Properties()));
+            ()-> new potterySword(ctl.copyPropertiesFrom(Items.WOODEN_SWORD)));
+    public static final Supplier<Item> BONFIRE_BLOCK_ITEM = ITEMS.register("bonfire",
+            ()->new BlockItem(BlockInit.BONFIRE_BLOCK.get(),
+                    new Item.Properties()));
+    public static final Supplier<Item> SIMPLE_FLINT_AND_STEEL = ITEMS.register("simply_flint_and_steel",
+            () -> new SimplyFlintAndSteelItem(new Item.Properties().stacksTo(1).durability(30)));
+
 }

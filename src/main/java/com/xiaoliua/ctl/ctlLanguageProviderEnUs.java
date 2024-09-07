@@ -35,5 +35,9 @@ public class ctlLanguageProviderEnUs extends LanguageProvider {
         this.add(ItemInit.POTTERY_HOE.get(), "Pottery Hoe");
         this.add(ItemInit.POTTERY_SHOVEL.get(), "Pottery Shovel");
         this.add(ItemInit.POTTERY_AXE.get(), "Pottery Axe");
+        this.add("text.ctl.DurabilityPenalty","The combined item of this item will consume 10 points of durability");
+        this.add("text.ctl.NotDurabilityPenalty","This is a normal item, and the item synthesized with it will last normally");
+        this.add(ItemInit.SIMPLE_FLINT_AND_STEEL.get(),"Simple flint & sheet");
+        this.add(ItemInit.BONFIRE_BLOCK_ITEM.get(),"Bonfire");
     }
 }

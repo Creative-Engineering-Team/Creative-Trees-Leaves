@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "category": "food",
+  "cookingtime": 1200,
+  "experience": 0.0,
+  "ingredient": {
+    "item": "ctl:unfired_clay_axe"
+  },
+  "result": "ctl:unassembled_pottery_axe"
+}

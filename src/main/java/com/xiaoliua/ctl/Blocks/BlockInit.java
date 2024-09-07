@@ -26,4 +26,6 @@ public class BlockInit {
             hayrackBlock::new);
     public static final RegistryObject<Block> SIMPLE_CRAFTING_TABLE =BLOCKS.register("simple_crafting_table",
             simpleCraftingTableBlock::new);
+    public static final RegistryObject<Block> BONFIRE_BLOCK = BLOCKS.register("bonfire",
+            bonfireBlock::new);
 }

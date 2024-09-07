@@ -3,33 +3,23 @@ package com.xiaoliua.ctl;
 import com.mojang.logging.LogUtils;
 import com.xiaoliua.ctl.Blocks.BlockEntityInit;
 import com.xiaoliua.ctl.Blocks.BlockInit;
+import com.xiaoliua.ctl.Blocks.bonfireBlock;
 import com.xiaoliua.ctl.Items.ItemInit;
+import com.xiaoliua.ctl.Items.unassembledClayItems;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.WoodType;
-import net.minecraft.world.level.material.MapColor;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.Tags;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.level.BlockEvent;
@@ -38,7 +28,6 @@ import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -48,20 +37,9 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.*;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.Version;
-import org.lwjgl.system.Platform;
 import org.slf4j.Logger;
-import org.stringtemplate.v4.ST;
 
-import javax.swing.text.FieldView;
-import javax.swing.text.html.HTML;
-import java.lang.reflect.Field;
 import java.util.*;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-import java.util.function.BooleanSupplier;
-import java.util.function.Supplier;
 import java.util.regex.Pattern;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -103,6 +81,8 @@ public class ctl
                 output.accept(ItemInit.POTTERY_HOE.get());
                 output.accept(ItemInit.POTTERY_SHOVEL.get());
                 output.accept(ItemInit.POTTERY_SWORD.get());
+                output.accept(ItemInit.BONFIRE_BLOCK_ITEM.get());
+                output.accept(ItemInit.SIMPLE_FLINT_AND_STEEL.get());
             })
             .title(Component.literal("Creative Trees & Leaves")).build());
     //Create a List to match the blocks
@@ -139,6 +119,34 @@ public class ctl
 
         MinecraftForge.EVENT_BUS.addListener(EventPriority.LOW,(PlayerEvent.BreakSpeed event) -> event.setNewSpeed(modifyBreakSpeed(
                 event.getEntity(),event.getState(),event.getPosition().orElse(null),event.getNewSpeed())));
+        MinecraftForge.EVENT_BUS.addListener((BlockEvent.BreakEvent event) -> {
+            Player player = event.getPlayer();
+            Block block = event.getState().getBlock();
+            if (block == BlockInit.BONFIRE_BLOCK.get() && player.getMainHandItem().getItem().equals(Items.AIR)){
+                bonfireBlock.hurtByFire(event.getState(),player.level(),
+                        event.getPos(),player);
+            }
+        });
+        MinecraftForge.EVENT_BUS.addListener((PlayerEvent.ItemCraftedEvent event) -> {
+            for (int i = 0; i < event.getInventory().getContainerSize(); i++) {
+                ItemStack stack = event.getInventory().getItem(i);
+
+
+                if (!stack.isEmpty() && stack.getItem() instanceof unassembledClayItems) {
+                    // 检查是否有耐久减少标签
+                    if (stack.getOrCreateTag().getBoolean(unassembledClayItems.DURABILITY_PENALTY_TAG)) {
+                        // 减少耐久度
+                        //stack.setDamageValue(stack.getDamageValue() - 10);
+                        event.getCrafting().setDamageValue(10);
+
+                        // 如果耐久用完，移除物品
+                        if (stack.getDamageValue() >= stack.getMaxDamage()) {
+                            stack.shrink(1);
+                        }
+                    }
+                }
+            }
+        });
         MinecraftForge.EVENT_BUS.addListener((BlockEvent.BreakEvent event)->{
             Player player = event.getPlayer();
             Level world = player.level();
@@ -149,7 +157,7 @@ public class ctl
                 //event.setCanceled(true);
                 //List<ItemStack> drop = Block.getDrops(blockState, (ServerLevel) world,event.getPos(),null);
                 //drop.clear();
-                LOGGER.info("ttt");
+                //LOGGER.info("ttt");
                 //if (RANDOM.nextFloat() < 0.75){
                     ItemStack realDrop = new ItemStack(ItemInit.PLIABLE_BRANCH.get());
                     world.addFreshEntity(new ItemEntity(world,event.getPos().getX(),event.getPos().getY(),event.getPos().getZ(),realDrop));
@@ -174,7 +182,8 @@ public class ctl
         if (isUsingCorrectToolToMine(state, pos, player)){
             return speed;
         }
-        player.sendSystemMessage(Component.literal("tool not correct"));
+//        if (player.getName().getString().equals("Dev"))
+//            player.sendSystemMessage(Component.literal("tool not correct"));
         return 0;
     }
 
@@ -187,37 +196,37 @@ public class ctl
         if (state.is(TagsInit.Blocks.useTool)||state.is(TagsInit.Blocks.ae2BlockMachines)||
                 state.is(TagsInit.Blocks.createBlockMachines)||state.is(TagsInit.Blocks.IEMachines)||
                 state.is(TagsInit.Blocks.MEKMachines) || state.is(TagsInit.Blocks.FarmersdelightUseTool)){
-            LOGGER.debug("need tool,modified");
+            //LOGGER.debug("need tool,modified");
             return true;
         }
         for (String useToolBlocksName : useToolBlocksNames) {
             if (Pattern.matches(useToolBlocksName, block.getDescriptionId())) {
-                LOGGER.debug("need tool,modified");
+                //LOGGER.debug("need tool,modified");
                 return true;
             }
         }
-        LOGGER.debug("another1,modified");
+        //LOGGER.debug("another1,modified");
         return false;
     }
 
     public static boolean isUsingCorrectTool(BlockState state, @Nullable BlockPos pos, Player player,
                                               boolean checkingCanMine) {
-        if (player.getName().equals(Component.literal("Dev")))
-            player.sendSystemMessage(Component.literal(state.getBlock().getDescriptionId()));
+//        if (player.getName().equals(Component.literal("Dev")))
+//            player.sendSystemMessage(Component.literal(state.getBlock().getDescriptionId()));
         if (!Config.useMineAble) {
-            LOGGER.debug("not use MineAble,pass");
+            //LOGGER.debug("not use MineAble,pass");
             return true;
         }
         if (state.is(TagsInit.Blocks.notTool)){
-            LOGGER.debug("block not use MineAble,pass");
+            //LOGGER.debug("block not use MineAble,pass");
             return true;
         }
         if (needTool(state.getBlock(),state) && (player.getMainHandItem().isCorrectToolForDrops(state))){
-            LOGGER.debug("correct tool,pass");
+            //LOGGER.debug("correct tool,pass");
             return true;
         }
         if (needTool(state.getBlock(),state) && (player.getMainHandItem().getDestroySpeed(state)>1.0f)){
-            LOGGER.debug("another,pass");
+            //LOGGER.debug("another,pass");
             return true;
         }
         return !needTool(state.getBlock(), state);
@@ -309,5 +318,17 @@ public class ctl
         useToolBlocksNames.add("block\\.create\\.redstone_.*");
         useToolBlocksNames.add("block\\.create\\.pulse_.*");
         useToolBlocksNames.add("block\\.create\\.powered_.*");
+    }
+
+    public static Item.Properties copyPropertiesFrom(Item existingItem) {
+        Item.Properties properties = new Item.Properties();
+
+        // 手动复制常见的属性
+        properties.stacksTo(existingItem.getMaxStackSize());
+        properties.durability(existingItem.getMaxDamage());
+
+        // 根据需要添加其他属性
+
+        return properties;
     }
 }
