@@ -1,7 +1,7 @@
 package com.xiaoliua.ctl;
 
+import com.xiaoliua.ctl.Blocks.BlockInit;
 import com.xiaoliua.ctl.Items.ItemInit;
-import net.minecraft.Util;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.LanguageProvider;
 
@@ -39,5 +39,6 @@ public class ctlLanguageProviderZhCn extends LanguageProvider {
         this.add("text.ctl.NotDurabilityPenalty","这是个正常的物品,用它合成的物品耐久正常");
         this.add(ItemInit.SIMPLE_FLINT_AND_STEEL.get(),"简易打火石");
         this.add(ItemInit.BONFIRE_BLOCK_ITEM.get(),"火堆");
+        this.add(BlockInit.BONFIRE_BLOCK.get(),"火堆");
     }
 }

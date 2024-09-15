@@ -5,6 +5,7 @@
   "minVersion": "0.8",
   "refmap": "ctl.refmap.json",
   "mixins": [
+    "CampfireBlockMixin",
     "recipeMixin"
   ],
   "client": [

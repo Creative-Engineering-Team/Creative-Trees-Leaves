@@ -1,7 +1,7 @@
 package com.xiaoliua.ctl;
 
+import com.xiaoliua.ctl.Blocks.BlockInit;
 import com.xiaoliua.ctl.Items.ItemInit;
-import net.minecraft.Util;
 import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.LanguageProvider;
 
@@ -39,5 +39,6 @@ public class ctlLanguageProviderEnUs extends LanguageProvider {
         this.add("text.ctl.NotDurabilityPenalty","This is a normal item, and the item synthesized with it will last normally");
         this.add(ItemInit.SIMPLE_FLINT_AND_STEEL.get(),"Simple flint & sheet");
         this.add(ItemInit.BONFIRE_BLOCK_ITEM.get(),"Bonfire");
+        this.add(BlockInit.BONFIRE_BLOCK.get(),"Bonfire");
     }
 }

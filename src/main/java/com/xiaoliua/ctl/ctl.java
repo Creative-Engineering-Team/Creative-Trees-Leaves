@@ -16,7 +16,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
@@ -34,12 +34,15 @@ import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.*;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.RegistryObject;
 import org.apache.maven.artifact.versioning.ArtifactVersion;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
 import java.util.regex.Pattern;
 
 // The value here should match an entry in the META-INF/mods.toml file
@@ -54,7 +57,7 @@ public class ctl
     // Create a Deferred Register to hold CreativeModeTabs which will all be registered under the "ctl" namespace
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
     // Creates a creative tab with the id "ctl:ctl_tab" for the ctl item, that is placed after the combat tab
-    public static final RegistryObject<CreativeModeTab> EXAMPLE_TAB = CREATIVE_MODE_TABS.register("ctl_tab", () -> CreativeModeTab.builder()
+    public static final RegistryObject<CreativeModeTab> CTL_TAB = CREATIVE_MODE_TABS.register("ctl_tab", () -> CreativeModeTab.builder()
             .withTabsBefore(CreativeModeTabs.COMBAT)
             .icon(() -> ItemInit.LEAF.get().getDefaultInstance())
             .displayItems((parameters, output) -> {
@@ -90,6 +93,56 @@ public class ctl
 
     public static final ArtifactVersion version = ModLoadingContext.get().getActiveContainer().getModInfo()
             .getVersion();
+
+    static {
+        useToolBlocksNames.add("block\\.mekanism\\..*_factory");
+        useToolBlocksNames.add("block\\.mekanism\\.chemical.*");
+        useToolBlocksNames.add("block\\.mekanism\\..*_fluid_tank");
+        useToolBlocksNames.add("block\\.mekanism\\..*_energy_cube");
+        useToolBlocksNames.add("block\\.mekanism\\..*_universal_cable");
+        useToolBlocksNames.add("block\\.mekanism\\..*_mechanical_pipe");
+        useToolBlocksNames.add("block\\.mekanism\\..*_pressurized_tube");
+        useToolBlocksNames.add("block\\.mekanism\\..*_logistical_transporter");
+        useToolBlocksNames.add("block\\.mekanism\\..*_thermodynamic_conductor");
+        useToolBlocksNames.add("block\\.mekanism\\..*_chemical_tank");
+        useToolBlocksNames.add("block\\.mekanism\\..*_transporter");
+        useToolBlocksNames.add("block\\.mekanism\\.laser.*");
+        useToolBlocksNames.add("block\\.mekanism\\.qio.*");
+        useToolBlocksNames.add("block\\.mekanism\\..*_glow_panel");
+        useToolBlocksNames.add("block\\.mekanism\\..*_glow");
+        useToolBlocksNames.add("block\\.immersiveengineering\\.capacitor_.*");
+        useToolBlocksNames.add("block\\.immersiveengineering\\.conveyor_.*");
+        useToolBlocksNames.add("block\\.immersiveengineering\\.fluid_.*");
+        useToolBlocksNames.add("block\\.immersiveengineering\\..*sorter");
+        useToolBlocksNames.add("block\\.immersiveengineering\\.turret.*");
+        useToolBlocksNames.add("block\\.immersiveengineering\\.coil_.*");
+        useToolBlocksNames.add("block\\.immersiveengineering\\..*_engineering");
+        useToolBlocksNames.add("block\\.immersiveengineering\\..*_fence");
+        useToolBlocksNames.add("block\\.immersiveengineering\\..*_wallmount");
+        useToolBlocksNames.add("block\\.immersiveengineering\\..*_post");
+        useToolBlocksNames.add("block\\.immersiveengineering\\..*_slope");
+        useToolBlocksNames.add("block\\.immersiveengineering\\..*_breaker");
+        useToolBlocksNames.add("block\\.immersiveengineering\\.connector_.*");
+        useToolBlocksNames.add("block\\.immersiveengineering\\..*_wood_horizontal");
+        useToolBlocksNames.add("block\\.immersiveengineering\\.blastbrick.*");
+        useToolBlocksNames.add("block\\.immersiveengineering\\.sheetmetal.*");
+        useToolBlocksNames.add("block\\.immersiveengineering\\.sheetmetal.*");
+        useToolBlocksNames.add("block\\.immersiveengineering\\.sheetmetal.*");
+        useToolBlocksNames.add("block\\.ae2\\.spatial.*");
+        useToolBlocksNames.add("block\\.ae2\\..*energy_cell");
+        useToolBlocksNames.add("block\\.ae2\\..*_crafting_storage");
+        useToolBlocksNames.add("block\\.create\\..*water_wheel");
+        useToolBlocksNames.add("block\\.create\\..*_valve_handle");
+        useToolBlocksNames.add("block\\.create\\.track.*");
+        useToolBlocksNames.add("block\\.create\\..*fluid.*");
+        useToolBlocksNames.add("block\\.create\\..*cogwheel.*");
+        useToolBlocksNames.add("block\\.create\\.mechanical.*");
+        useToolBlocksNames.add("block\\.create\\..*_encased_shaft");
+        useToolBlocksNames.add("block\\.create\\.redstone_.*");
+        useToolBlocksNames.add("block\\.create\\.pulse_.*");
+        useToolBlocksNames.add("block\\.create\\.powered_.*");
+    }
+
     public ctl()
     {
         LOGGER.info("Welcome use ctl,version: "+version.toString() + " by xiaoliu_a&mc100212");
@@ -171,25 +224,18 @@ public class ctl
         ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 
-    private void commonSetup(final FMLCommonSetupEvent event)
-    {
-        // Some common setup code
-    }
-
     public static float modifyBreakSpeed(Player player, BlockState state, @Nullable BlockPos pos, float speed)
     {
         //if (player.getName().equals(Component.literal("Dev")))return 114514;
-        if (isUsingCorrectToolToMine(state, pos, player)){
+        if (isUsingCorrectToolToMine(state, player)){
             return speed;
         }
-//        if (player.getName().getString().equals("Dev"))
-//            player.sendSystemMessage(Component.literal("tool not correct"));
         return 0;
     }
 
-    public static boolean isUsingCorrectToolToMine(BlockState state, @Nullable BlockPos pos, Player player)
+    public static boolean isUsingCorrectToolToMine(BlockState state, Player player)
     {
-        return isUsingCorrectTool(state, pos, player,  true);
+        return isUsingCorrectTool(state, player);
     }
 
     public static boolean needTool(Block block,BlockState state){
@@ -209,10 +255,7 @@ public class ctl
         return false;
     }
 
-    public static boolean isUsingCorrectTool(BlockState state, @Nullable BlockPos pos, Player player,
-                                              boolean checkingCanMine) {
-//        if (player.getName().equals(Component.literal("Dev")))
-//            player.sendSystemMessage(Component.literal(state.getBlock().getDescriptionId()));
+    public static boolean isUsingCorrectTool(BlockState state, Player player) {
         if (!Config.useMineAble) {
             //LOGGER.debug("not use MineAble,pass");
             return true;
@@ -232,6 +275,23 @@ public class ctl
         return !needTool(state.getBlock(), state);
     }
 
+    public static Item.Properties copyPropertiesFrom(Item existingItem) {
+        Item.Properties properties = new Item.Properties();
+
+        // 手动复制常见的属性
+        properties.stacksTo(existingItem.getMaxStackSize());
+        properties.durability(existingItem.getMaxDamage());
+
+        // 根据需要添加其他属性
+
+        return properties;
+    }
+
+    private void commonSetup(final FMLCommonSetupEvent event)
+    {
+        // Some common setup code
+    }
+
     // Add the ctl block item to the building blocks tab
     private void addCreative(BuildCreativeModeTabContentsEvent event)
     {
@@ -248,13 +308,6 @@ public class ctl
     {
         RecipeManager recipeManager = event.getServer().getRecipeManager();
         ResourceLocation woodenAxeRecipeId = new ResourceLocation("minecraft", "wooden_axe");
-//        Optional<? extends Recipe<?>> recipeOptional = manager.byKey(woodenAxeRecipeId);
-//        if (recipeOptional.isPresent()){
-//            Map<ResourceLocation, Recipe<?>> recipeMap = manager.getRecipes();
-//            recipeMap.remove(woodenAxeRecipeId);
-//        }
-        // Do something when the server starts
-        //LOGGER.info("HELLO from server starting");
     }
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent
@@ -267,68 +320,6 @@ public class ctl
             // Some client setup code
             LOGGER.info("HELLO FROM CLIENT SETUP");
             LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
-            //MenuScreens.register(ContainerInit.CUSTOM_WORKBENCH.get(), simpleCraftingTableScreen::new);
         }
-    }
-
-    static {
-        useToolBlocksNames.add("block\\.mekanism\\..*_factory");
-        useToolBlocksNames.add("block\\.mekanism\\.chemical.*");
-        useToolBlocksNames.add("block\\.mekanism\\..*_fluid_tank");
-        useToolBlocksNames.add("block\\.mekanism\\..*_energy_cube");
-        useToolBlocksNames.add("block\\.mekanism\\..*_universal_cable");
-        useToolBlocksNames.add("block\\.mekanism\\..*_mechanical_pipe");
-        useToolBlocksNames.add("block\\.mekanism\\..*_pressurized_tube");
-        useToolBlocksNames.add("block\\.mekanism\\..*_logistical_transporter");
-        useToolBlocksNames.add("block\\.mekanism\\..*_thermodynamic_conductor");
-        useToolBlocksNames.add("block\\.mekanism\\..*_chemical_tank");
-        useToolBlocksNames.add("block\\.mekanism\\..*_transporter");
-        useToolBlocksNames.add("block\\.mekanism\\.laser.*");
-        useToolBlocksNames.add("block\\.mekanism\\.qio.*");
-        useToolBlocksNames.add("block\\.mekanism\\..*_glow_panel");
-        useToolBlocksNames.add("block\\.mekanism\\..*_glow");
-        useToolBlocksNames.add("block\\.immersiveengineering\\.capacitor_.*");
-        useToolBlocksNames.add("block\\.immersiveengineering\\.conveyor_.*");
-        useToolBlocksNames.add("block\\.immersiveengineering\\.fluid_.*");
-        useToolBlocksNames.add("block\\.immersiveengineering\\..*sorter");
-        useToolBlocksNames.add("block\\.immersiveengineering\\.turret.*");
-        useToolBlocksNames.add("block\\.immersiveengineering\\.coil_.*");
-        useToolBlocksNames.add("block\\.immersiveengineering\\..*_engineering");
-        useToolBlocksNames.add("block\\.immersiveengineering\\..*_fence");
-        useToolBlocksNames.add("block\\.immersiveengineering\\..*_wallmount");
-        useToolBlocksNames.add("block\\.immersiveengineering\\..*_post");
-        useToolBlocksNames.add("block\\.immersiveengineering\\..*_slope");
-        useToolBlocksNames.add("block\\.immersiveengineering\\..*_breaker");
-        useToolBlocksNames.add("block\\.immersiveengineering\\.connector_.*");
-        useToolBlocksNames.add("block\\.immersiveengineering\\..*_wood_horizontal");
-        useToolBlocksNames.add("block\\.immersiveengineering\\.blastbrick.*");
-        useToolBlocksNames.add("block\\.immersiveengineering\\.sheetmetal.*");
-        useToolBlocksNames.add("block\\.immersiveengineering\\.sheetmetal.*");
-        useToolBlocksNames.add("block\\.immersiveengineering\\.sheetmetal.*");
-        useToolBlocksNames.add("block\\.ae2\\.spatial.*");
-        useToolBlocksNames.add("block\\.ae2\\..*energy_cell");
-        useToolBlocksNames.add("block\\.ae2\\..*_crafting_storage");
-        useToolBlocksNames.add("block\\.create\\..*water_wheel");
-        useToolBlocksNames.add("block\\.create\\..*_valve_handle");
-        useToolBlocksNames.add("block\\.create\\.track.*");
-        useToolBlocksNames.add("block\\.create\\..*fluid.*");
-        useToolBlocksNames.add("block\\.create\\..*cogwheel.*");
-        useToolBlocksNames.add("block\\.create\\.mechanical.*");
-        useToolBlocksNames.add("block\\.create\\..*_encased_shaft");
-        useToolBlocksNames.add("block\\.create\\.redstone_.*");
-        useToolBlocksNames.add("block\\.create\\.pulse_.*");
-        useToolBlocksNames.add("block\\.create\\.powered_.*");
-    }
-
-    public static Item.Properties copyPropertiesFrom(Item existingItem) {
-        Item.Properties properties = new Item.Properties();
-
-        // 手动复制常见的属性
-        properties.stacksTo(existingItem.getMaxStackSize());
-        properties.durability(existingItem.getMaxDamage());
-
-        // 根据需要添加其他属性
-
-        return properties;
     }
 }

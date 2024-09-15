@@ -11,10 +11,12 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.crafting.CampfireCookingRecipe;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -46,12 +48,12 @@ import java.util.Optional;
 import java.util.function.ToIntFunction;
 
 public class bonfireBlock extends BaseEntityBlock implements SimpleWaterloggedBlock {
-    protected static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 7.0D, 16.0D);
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final BooleanProperty HAS_FUEL = BooleanProperty.create("fuel");
     public static final boolean HurtFrostWalker = false;
+    protected static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 7.0D, 16.0D);
     protected bonfireBlock() {
         super(Properties.of().mapColor(MapColor.PODZOL).instrument(NoteBlockInstrument.BASS)
                 .strength(2.0F).sound(SoundType.WOOD).lightLevel(litBlockEmission(15))
@@ -65,6 +67,33 @@ public class bonfireBlock extends BaseEntityBlock implements SimpleWaterloggedBl
         return (p_50763_) -> {
             return p_50763_.getValue(BlockStateProperties.LIT) ? p_50760_ : 0;
         };
+    }
+
+    public static void hurtByFire(BlockState state, Level world, BlockPos pos, Entity entity){
+        if (entity == null){
+            return;
+        }
+        if (state.getValue(LIT)&& entity instanceof LivingEntity){
+            if (EnchantmentHelper.hasFrostWalker((LivingEntity) entity) && !HurtFrostWalker){
+                return;
+            }
+            entity.hurt(world.damageSources().inFire(),1);
+        }
+    }
+
+    public static void dowse(@javax.annotation.Nullable Entity p_152750_, LevelAccessor p_152751_, BlockPos p_152752_, BlockState p_152753_) {
+        if (p_152751_.isClientSide()) {
+//            for(int i = 0; i < 20; ++i) {
+//                makeParticles((Level)p_152751_, p_152752_, p_152753_.getValue(SIGNAL_FIRE), true);
+//            }
+        }
+
+        BlockEntity blockentity = p_152751_.getBlockEntity(p_152752_);
+        if (blockentity instanceof CampfireBlockEntity) {
+            ((CampfireBlockEntity) blockentity).dowse();
+        }
+
+        p_152751_.gameEvent(p_152750_, GameEvent.BLOCK_CHANGE, p_152752_);
     }
 
     @Override
@@ -109,18 +138,6 @@ public class bonfireBlock extends BaseEntityBlock implements SimpleWaterloggedBl
         return RenderShape.MODEL;
     }
 
-    public static void hurtByFire(BlockState state, Level world, BlockPos pos, Entity entity){
-        if (entity == null){
-            return;
-        }
-        if (state.getValue(LIT)&& entity instanceof LivingEntity){
-            if (EnchantmentHelper.hasFrostWalker((LivingEntity) entity) && !HurtFrostWalker){
-                return;
-            }
-            entity.hurt(world.damageSources().inFire(),1);
-        }
-    }
-
     @Override
     public void entityInside(BlockState p_60495_, Level p_60496_, BlockPos p_60497_, Entity p_60498_) {
         hurtByFire(p_60495_,p_60496_,p_60497_,p_60498_);
@@ -141,10 +158,10 @@ public class bonfireBlock extends BaseEntityBlock implements SimpleWaterloggedBl
             boolean flag = p_51259_.getValue(LIT);
             if (flag) {
                 if (!p_51257_.isClientSide()) {
-                    p_51257_.playSound((Player)null, p_51258_, SoundEvents.GENERIC_EXTINGUISH_FIRE, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    p_51257_.playSound(null, p_51258_, SoundEvents.GENERIC_EXTINGUISH_FIRE, SoundSource.BLOCKS, 1.0F, 1.0F);
                 }
 
-                dowse((Entity)null, p_51257_, p_51258_, p_51259_);
+                dowse(null, p_51257_, p_51258_, p_51259_);
             }
 
             p_51257_.setBlock(p_51258_, p_51259_.setValue(WATERLOGGED, Boolean.valueOf(true)).setValue(LIT, Boolean.valueOf(false)), 3);
@@ -153,21 +170,6 @@ public class bonfireBlock extends BaseEntityBlock implements SimpleWaterloggedBl
         } else {
             return false;
         }
-    }
-
-    public static void dowse(@javax.annotation.Nullable Entity p_152750_, LevelAccessor p_152751_, BlockPos p_152752_, BlockState p_152753_) {
-        if (p_152751_.isClientSide()) {
-//            for(int i = 0; i < 20; ++i) {
-//                makeParticles((Level)p_152751_, p_152752_, p_152753_.getValue(SIGNAL_FIRE), true);
-//            }
-        }
-
-        BlockEntity blockentity = p_152751_.getBlockEntity(p_152752_);
-        if (blockentity instanceof CampfireBlockEntity) {
-            ((CampfireBlockEntity) blockentity).dowse();
-        }
-
-        p_152751_.gameEvent(p_152750_, GameEvent.BLOCK_CHANGE, p_152752_);
     }
 
     @Override
@@ -189,15 +191,16 @@ public class bonfireBlock extends BaseEntityBlock implements SimpleWaterloggedBl
         BlockEntity blockEntity = level.getBlockEntity(pos);
         if (player.getMainHandItem().is(Items.STICK) && !state.getValue(HAS_FUEL)){
             if (!level.isClientSide) {
-                level.setBlock(pos, state.setValue(HAS_FUEL, true), 11);
+                level.setBlock(pos, state.setValue(HAS_FUEL, true), 3);
                 level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player,
                         state.setValue(HAS_FUEL, true)));
-                player.getMainHandItem().hurtAndBreak(1, player, (Lplayer) -> {
-                    Lplayer.broadcastBreakEvent(hand);
-                });
+                //player.getMainHandItem().copy();
+                player.setItemSlot(EquipmentSlot.MAINHAND,player.getMainHandItem().
+                        copyWithCount(player.getMainHandItem().getCount()-1));
                 return InteractionResult.SUCCESS;
             }
-        }else if (blockEntity instanceof bonfireBlockEntity bonfireblockentity && state.getValue(HAS_FUEL)){
+            return InteractionResult.CONSUME;
+        }else if (blockEntity instanceof bonfireBlockEntity bonfireblockentity && state.getValue(LIT)){
             ItemStack itemStack = player.getMainHandItem();
             Optional<CampfireCookingRecipe> optional = bonfireblockentity.getCookableRecipe(itemStack);
             if (optional.isPresent()){
@@ -214,7 +217,7 @@ public class bonfireBlock extends BaseEntityBlock implements SimpleWaterloggedBl
                     return InteractionResult.SUCCESS;
                 }
             }
-            return InteractionResult.PASS;
+            return InteractionResult.sidedSuccess(true);
         }
         return InteractionResult.PASS;
     }
@@ -238,7 +241,7 @@ public class bonfireBlock extends BaseEntityBlock implements SimpleWaterloggedBl
             }
             if (p_220921_.nextInt(5) == 0) {
                 for(int i = 0; i < p_220921_.nextInt(1) + 1; ++i) {
-                    p_220919_.addParticle(ParticleTypes.LAVA, (double)p_220920_.getX() + 0.5D, (double)p_220920_.getY() + 0.5D, (double)p_220920_.getZ() + 0.5D, (double)(p_220921_.nextFloat() / 2.0F), 5.0E-5D, (double)(p_220921_.nextFloat() / 2.0F));
+                    p_220919_.addParticle(ParticleTypes.LAVA, (double)p_220920_.getX() + 0.5D, (double)p_220920_.getY() + 0.5D, (double)p_220920_.getZ() + 0.5D, p_220921_.nextFloat() / 2.0F, 5.0E-5D, p_220921_.nextFloat() / 2.0F);
                 }
             }
         }
