@@ -51,6 +51,7 @@ public class bonfireBlock extends BaseEntityBlock implements SimpleWaterloggedBl
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+    public static final BooleanProperty IGNITABLE = BooleanProperty.create("ignitable");
     public static final BooleanProperty HAS_FUEL = BooleanProperty.create("fuel");
     public static final boolean HurtFrostWalker = false;
     protected static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 7.0D, 16.0D);
@@ -59,7 +60,7 @@ public class bonfireBlock extends BaseEntityBlock implements SimpleWaterloggedBl
                 .strength(2.0F).sound(SoundType.WOOD).lightLevel(litBlockEmission(15))
                 .noOcclusion().ignitedByLava());
         this.registerDefaultState(this.stateDefinition.any().setValue(LIT, Boolean.FALSE).setValue(FACING, Direction.NORTH)
-                .setValue(WATERLOGGED,false).setValue(HAS_FUEL,false));
+                .setValue(WATERLOGGED,false).setValue(HAS_FUEL,false).setValue(IGNITABLE,false));
 
     }
 
@@ -123,7 +124,7 @@ public class bonfireBlock extends BaseEntityBlock implements SimpleWaterloggedBl
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> p_49915_) {
-        p_49915_.add(LIT,FACING,WATERLOGGED,HAS_FUEL);
+        p_49915_.add(LIT,FACING,WATERLOGGED,HAS_FUEL,IGNITABLE);
         //super.createBlockStateDefinition(p_49915_);
     }
 
@@ -200,20 +201,22 @@ public class bonfireBlock extends BaseEntityBlock implements SimpleWaterloggedBl
                 return InteractionResult.SUCCESS;
             }
             return InteractionResult.CONSUME;
-        }else if (blockEntity instanceof bonfireBlockEntity bonfireblockentity && state.getValue(LIT)){
+        }else if (blockEntity instanceof bonfireBlockEntity bonfireblockentity && state.getValue(HAS_FUEL) &&
+                (bonfireblockentity.getCookableRecipe(player.getMainHandItem()).isPresent() ||
+                        player.getMainHandItem().getItem() instanceof unassembledClayItems)){
             ItemStack itemStack = player.getMainHandItem();
             Optional<CampfireCookingRecipe> optional = bonfireblockentity.getCookableRecipe(itemStack);
             if (optional.isPresent()){
                 if (!level.isClientSide && bonfireblockentity.placeFood(player,player.getAbilities().instabuild ?
                         itemStack.copy() : itemStack,optional.get().getCookingTime())){
-                    level.setBlock(pos,state.setValue(LIT,true),3);
+                    level.setBlock(pos,state.setValue(IGNITABLE,true),3);
                     return InteractionResult.SUCCESS;
                 }
                 return InteractionResult.CONSUME;
             }else if (itemStack.getItem().asItem() instanceof unassembledClayItems){
                 if (!level.isClientSide && bonfireblockentity.placeFood(player,player.getAbilities().instabuild ?
                         itemStack.copy() : itemStack, ctl.RANDOM.nextInt(45,60))){
-                    level.setBlock(pos,state.setValue(LIT,true),3);
+                    level.setBlock(pos,state.setValue(IGNITABLE,true),3);
                     return InteractionResult.SUCCESS;
                 }
             }
@@ -228,8 +231,8 @@ public class bonfireBlock extends BaseEntityBlock implements SimpleWaterloggedBl
             return p_153213_.getValue(LIT) ? createTickerHelper(p_153214_,BlockEntityInit.BONFIRE_BLOCK_ENTITY.get(),
                     bonfireBlockEntity::particleTick) : null;
         }else {
-            return createTickerHelper(p_153214_,BlockEntityInit.BONFIRE_BLOCK_ENTITY.get()
-                    ,bonfireBlockEntity::cookTick);
+            return p_153213_.getValue(LIT) ? createTickerHelper(p_153214_,BlockEntityInit.BONFIRE_BLOCK_ENTITY.get()
+                    ,bonfireBlockEntity::cookTick) : null;
         }
     }
 

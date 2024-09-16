@@ -38,7 +38,7 @@ public class ctlLanguageProviderEnUs extends LanguageProvider {
         this.add("text.ctl.DurabilityPenalty","The combined item of this item will consume 10 points of durability");
         this.add("text.ctl.NotDurabilityPenalty","This is a normal item, and the item synthesized with it will last normally");
         this.add(ItemInit.SIMPLE_FLINT_AND_STEEL.get(),"Simple flint & sheet");
-        this.add(ItemInit.BONFIRE_BLOCK_ITEM.get(),"Bonfire");
+        //this.add(ItemInit.BONFIRE_BLOCK_ITEM.get(),"Bonfire");
         this.add(BlockInit.BONFIRE_BLOCK.get(),"Bonfire");
     }
 }

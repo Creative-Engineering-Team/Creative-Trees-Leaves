@@ -1,4 +1,5 @@
 {
+  "block.ctl.bonfire": "火堆",
   "block.ctl.hayrack": "干燥架",
   "block.ctl.simple_crafting_table": "简易工作台",
   "item.ctl.dry_leaf": "干燥树叶",
@@ -12,6 +13,7 @@
   "item.ctl.pottery_shovel": "陶土锹",
   "item.ctl.pottery_sword": "陶剑",
   "item.ctl.rope": "粗制绳子",
+  "item.ctl.simply_flint_and_steel": "简易打火石",
   "item.ctl.unassembled_pottery_axe": "陶土斧头",
   "item.ctl.unassembled_pottery_hoe": "陶土锄头",
   "item.ctl.unassembled_pottery_pickaxe": "陶土镐头",

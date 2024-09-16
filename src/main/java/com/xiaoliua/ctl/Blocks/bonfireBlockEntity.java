@@ -34,32 +34,11 @@ public class bonfireBlockEntity extends BlockEntity {
         super(BlockEntityInit.BONFIRE_BLOCK_ENTITY.get(), p_155229_, p_155230_);
     }
 
-    public Optional<CampfireCookingRecipe> getCookableRecipe(ItemStack p_59052_) {
-        return this.items.stream().noneMatch(ItemStack::isEmpty) ? Optional.empty() : this.quickCheck.getRecipeFor(new SimpleContainer(p_59052_), this.level);
-    }
-
-    public boolean placeFood(@Nullable Entity p_238285_, ItemStack p_238286_, int p_238287_) {
-        for(int i = 0; i < this.items.size(); ++i) {
-            ItemStack itemstack = this.items.get(i);
-            if (itemstack.isEmpty()) {
-                this.cookingTime[i] = p_238287_;
-                this.cookingProgress[i] = 0;
-                this.items.set(i, p_238286_.split(1));
-                this.level.gameEvent(GameEvent.BLOCK_CHANGE, this.getBlockPos(), GameEvent.Context.of(p_238285_, this.getBlockState()));
-                this.markUpdated();
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    private void markUpdated() {
-        this.setChanged();
-        this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
-    }
-
     public static void cookTick(Level p_155307_, BlockPos p_155308_, BlockState p_155309_, bonfireBlockEntity p_155310_) {
+        if (p_155309_.getValue(bonfireBlock.IGNITABLE)) {
+            p_155307_.setBlock(p_155308_, p_155309_.setValue(bonfireBlock.IGNITABLE, false)
+                    .setValue(bonfireBlock.HAS_FUEL,false), 3);
+        }
         //ctl.LOGGER.debug("bonfire tick");
         boolean flag = false;
 
@@ -80,7 +59,7 @@ public class bonfireBlockEntity extends BlockEntity {
                                 tag.putBoolean(unassembledClayItems.DURABILITY_PENALTY_TAG,true);
                             }
                         }
-                        Containers.dropItemStack(p_155307_, (double)p_155308_.getX(), (double)p_155308_.getY(), (double)p_155308_.getZ(), itemstack1);
+                        Containers.dropItemStack(p_155307_, p_155308_.getX(), p_155308_.getY(), p_155308_.getZ(), itemstack1);
                         p_155310_.items.set(i, ItemStack.EMPTY);
                         p_155307_.sendBlockUpdated(p_155308_, p_155309_, p_155309_, 3);
                         p_155307_.gameEvent(GameEvent.BLOCK_CHANGE, p_155308_, GameEvent.Context.of(p_155309_));
@@ -95,31 +74,6 @@ public class bonfireBlockEntity extends BlockEntity {
             setChanged(p_155307_, p_155308_, p_155309_);
         }
 
-    }
-
-    @Override
-    public void load(CompoundTag p_155312_) {
-        super.load(p_155312_);
-        this.items.clear();
-        ContainerHelper.loadAllItems(p_155312_, this.items);
-        if (p_155312_.contains("CookingTimes", 11)) {
-            int[] aint = p_155312_.getIntArray("CookingTimes");
-            System.arraycopy(aint, 0, this.cookingProgress, 0, Math.min(this.cookingTime.length, aint.length));
-        }
-
-        if (p_155312_.contains("CookingTotalTimes", 11)) {
-            int[] aint1 = p_155312_.getIntArray("CookingTotalTimes");
-            System.arraycopy(aint1, 0, this.cookingTime, 0, Math.min(this.cookingTime.length, aint1.length));
-        }
-
-    }
-
-    @Override
-    protected void saveAdditional(CompoundTag p_187486_) {
-        super.saveAdditional(p_187486_);
-        ContainerHelper.saveAllItems(p_187486_, this.items, true);
-        p_187486_.putIntArray("CookingTimes", this.cookingProgress);
-        p_187486_.putIntArray("CookingTotalTimes", this.cookingTime);
     }
 
     public static void particleTick(Level p_155319_, BlockPos p_155320_, BlockState p_155321_, bonfireBlockEntity p_155322_) {
@@ -146,5 +100,55 @@ public class bonfireBlockEntity extends BlockEntity {
             }
         }
 
+    }
+
+    public Optional<CampfireCookingRecipe> getCookableRecipe(ItemStack p_59052_) {
+        return this.items.stream().noneMatch(ItemStack::isEmpty) ? Optional.empty() : this.quickCheck.getRecipeFor(new SimpleContainer(p_59052_), this.level);
+    }
+
+    public boolean placeFood(@Nullable Entity p_238285_, ItemStack p_238286_, int p_238287_) {
+        for(int i = 0; i < this.items.size(); ++i) {
+            ItemStack itemstack = this.items.get(i);
+            if (itemstack.isEmpty()) {
+                this.cookingTime[i] = p_238287_;
+                this.cookingProgress[i] = 0;
+                this.items.set(i, p_238286_.split(1));
+                this.level.gameEvent(GameEvent.BLOCK_CHANGE, this.getBlockPos(), GameEvent.Context.of(p_238285_, this.getBlockState()));
+                this.markUpdated();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private void markUpdated() {
+        this.setChanged();
+        this.getLevel().sendBlockUpdated(this.getBlockPos(), this.getBlockState(), this.getBlockState(), 3);
+    }
+
+    @Override
+    public void load(CompoundTag p_155312_) {
+        super.load(p_155312_);
+        this.items.clear();
+        ContainerHelper.loadAllItems(p_155312_, this.items);
+        if (p_155312_.contains("CookingTimes", 11)) {
+            int[] aint = p_155312_.getIntArray("CookingTimes");
+            System.arraycopy(aint, 0, this.cookingProgress, 0, Math.min(this.cookingTime.length, aint.length));
+        }
+
+        if (p_155312_.contains("CookingTotalTimes", 11)) {
+            int[] aint1 = p_155312_.getIntArray("CookingTotalTimes");
+            System.arraycopy(aint1, 0, this.cookingTime, 0, Math.min(this.cookingTime.length, aint1.length));
+        }
+
+    }
+
+    @Override
+    protected void saveAdditional(CompoundTag p_187486_) {
+        super.saveAdditional(p_187486_);
+        ContainerHelper.saveAllItems(p_187486_, this.items, true);
+        p_187486_.putIntArray("CookingTimes", this.cookingProgress);
+        p_187486_.putIntArray("CookingTotalTimes", this.cookingTime);
     }
 }

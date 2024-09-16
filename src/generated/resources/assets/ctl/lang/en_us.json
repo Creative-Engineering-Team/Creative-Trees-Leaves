@@ -1,4 +1,5 @@
 {
+  "block.ctl.bonfire": "Bonfire",
   "block.ctl.hayrack": "Rack",
   "block.ctl.simple_crafting_table": "Simple Crafting Table",
   "item.ctl.dry_leaf": "Dry Leaf",
@@ -12,6 +13,7 @@
   "item.ctl.pottery_shovel": "Pottery Shovel",
   "item.ctl.pottery_sword": "Pottery Sword",
   "item.ctl.rope": "Rope",
+  "item.ctl.simply_flint_and_steel": "Simple flint & sheet",
   "item.ctl.unassembled_pottery_axe": "Unassembled Pottery Axe Head",
   "item.ctl.unassembled_pottery_hoe": "Unassembled Pottery Hoe Head",
   "item.ctl.unassembled_pottery_pickaxe": "Unassembled Pottery Pickaxe Head",

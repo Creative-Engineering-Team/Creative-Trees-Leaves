@@ -38,7 +38,7 @@ public class ctlLanguageProviderZhCn extends LanguageProvider {
         this.add("text.ctl.DurabilityPenalty","这个物品合成的物品将损耗10点耐久");
         this.add("text.ctl.NotDurabilityPenalty","这是个正常的物品,用它合成的物品耐久正常");
         this.add(ItemInit.SIMPLE_FLINT_AND_STEEL.get(),"简易打火石");
-        this.add(ItemInit.BONFIRE_BLOCK_ITEM.get(),"火堆");
+        //this.add(ItemInit.BONFIRE_BLOCK_ITEM.get(),"火堆");
         this.add(BlockInit.BONFIRE_BLOCK.get(),"火堆");
     }
 }

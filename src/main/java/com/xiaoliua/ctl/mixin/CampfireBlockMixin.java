@@ -13,7 +13,8 @@ public class CampfireBlockMixin {
     @Inject(method = "canLight",at = @At("HEAD"), cancellable = true)
     private static void canLight(BlockState p_51322_, CallbackInfoReturnable<Boolean> cir) {
         if (p_51322_.getBlock() instanceof bonfireBlock){
-            cir.setReturnValue(!p_51322_.getValue(bonfireBlock.LIT) && p_51322_.getValue(bonfireBlock.HAS_FUEL));
+            cir.setReturnValue(p_51322_.getValue(bonfireBlock.IGNITABLE) && !p_51322_.getValue(bonfireBlock.LIT)
+            && !p_51322_.getValue(bonfireBlock.WATERLOGGED));
         }
     }
 }
