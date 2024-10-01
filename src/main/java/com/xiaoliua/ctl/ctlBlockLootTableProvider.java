@@ -1,16 +1,14 @@
 package com.xiaoliua.ctl;
 
+import blusunrize.immersiveengineering.api.EnumMetals;
+import blusunrize.immersiveengineering.common.register.IEItems;
 import com.xiaoliua.ctl.Blocks.BlockInit;
-import com.xiaoliua.ctl.Items.ItemInit;
-import net.minecraft.data.PackOutput;
+import mekanism.common.registries.MekanismItems;
+import mekanism.common.resource.PrimaryResource;
+import mekanism.common.resource.ResourceType;
 import net.minecraft.data.loot.BlockLootSubProvider;
-import net.minecraft.data.loot.LootTableProvider;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.flag.FeatureFlags;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -22,7 +20,7 @@ import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
-import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 public class ctlBlockLootTableProvider extends BlockLootSubProvider {
@@ -30,7 +28,9 @@ public class ctlBlockLootTableProvider extends BlockLootSubProvider {
     public static final Set<Block> BLOCKS = Set.of(
             BlockInit.HAYRACK_BLOCK.get(),
             BlockInit.SIMPLE_CRAFTING_TABLE.get(),
-            BlockInit.BONFIRE_BLOCK.get()
+            BlockInit.BONFIRE_BLOCK.get(),
+            BlockInit.COPPER_ORE_GRAVEL.get(),
+            BlockInit.TIN_ORE_GRAVEL.get()
     );
 
     protected ctlBlockLootTableProvider() {
@@ -41,7 +41,9 @@ public class ctlBlockLootTableProvider extends BlockLootSubProvider {
     protected void generate() {
         this.dropSelf(BlockInit.HAYRACK_BLOCK.get());
         this.dropOther(BlockInit.SIMPLE_CRAFTING_TABLE.get(),BlockInit.SIMPLE_CRAFTING_TABLE.get());
-        this.add(BlockInit.BONFIRE_BLOCK.get(), this::createCustomSticksLootTable);
+        this.add(BlockInit.BONFIRE_BLOCK.get(), this::BonfireLootTable);
+        this.add(BlockInit.COPPER_ORE_GRAVEL.get(),this::CopperOreGravelLootTable);
+        this.add(BlockInit.TIN_ORE_GRAVEL.get(),this::TinOreGravelLootTable);
     }
 
     @Override
@@ -49,12 +51,33 @@ public class ctlBlockLootTableProvider extends BlockLootSubProvider {
         return BLOCKS;
     }
 
-    private LootTable.Builder createCustomSticksLootTable(Block block) {
+    private LootTable.Builder BonfireLootTable(Block block) {
         return LootTable.lootTable()
                 .withPool(LootPool.lootPool()
                         .setRolls(ConstantValue.exactly(1))
                         .add(LootItem.lootTableItem(Items.STICK)
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 3))))
+                        .when(LootItemRandomChanceCondition.randomChance(1.0F))
+                );
+    }
+
+    private LootTable.Builder CopperOreGravelLootTable(Block block) {
+        return LootTable.lootTable()
+                .withPool(LootPool.lootPool()
+                        .setRolls(ConstantValue.exactly(1))
+                        .add(LootItem.lootTableItem(IEItems.Metals.NUGGETS.get(EnumMetals.COPPER))
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(2, 3))))
+                        .when(LootItemRandomChanceCondition.randomChance(1.0F))
+                );
+    }
+
+    private LootTable.Builder TinOreGravelLootTable(Block block) {
+        return LootTable.lootTable()
+                .withPool(LootPool.lootPool()
+                        .setRolls(ConstantValue.exactly(1))
+                        .add(LootItem.lootTableItem(Objects.requireNonNull(MekanismItems.PROCESSED_RESOURCES.
+                                        get(ResourceType.NUGGET, PrimaryResource.TIN)))
+                                .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, 2))))
                         .when(LootItemRandomChanceCondition.randomChance(1.0F))
                 );
     }

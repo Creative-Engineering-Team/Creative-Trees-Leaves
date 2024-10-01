@@ -69,5 +69,14 @@ public class ItemInit {
                     new Item.Properties()));
     public static final Supplier<Item> SIMPLE_FLINT_AND_STEEL = ITEMS.register("simply_flint_and_steel",
             () -> new SimplyFlintAndSteelItem(new Item.Properties().stacksTo(1).durability(30)));
-
+    @SuppressWarnings("unused")
+    public static final Supplier<Item> COPPER_ORE_GRAVEL_ITEM = ITEMS.register("copper_ore_gravel",
+            ()->new BlockItem(BlockInit.COPPER_ORE_GRAVEL.get(),
+                    new Item.Properties()));
+    @SuppressWarnings("unused")
+    public static final Supplier<Item> TIN_ORE_GRAVEL_ITEM = ITEMS.register("tin_ore_gravel",
+            ()->new BlockItem(BlockInit.TIN_ORE_GRAVEL.get(),
+                    new Item.Properties()));
+    public static final Supplier<Item> NUGGET_TIN_AND_COPPER = ITEMS.register("nugget_tin_and_copper",
+            ()->new nuggetTinAndCopper(new Item.Properties()));
 }

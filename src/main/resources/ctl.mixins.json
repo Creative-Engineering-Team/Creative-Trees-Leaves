@@ -6,6 +6,7 @@
   "refmap": "ctl.refmap.json",
   "mixins": [
     "CampfireBlockMixin",
+    "FlowingFluidMixin",
     "recipeMixin"
   ],
   "client": [

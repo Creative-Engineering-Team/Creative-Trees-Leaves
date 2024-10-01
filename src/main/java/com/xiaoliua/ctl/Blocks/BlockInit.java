@@ -1,18 +1,10 @@
 package com.xiaoliua.ctl.Blocks;
 
 import com.xiaoliua.ctl.ctl;
-import net.minecraft.client.resources.model.Material;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.DoubleBlockCombiner;
-import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.material.MapColor;
-import net.minecraftforge.client.model.obj.ObjMaterialLibrary;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-
-import java.util.function.Supplier;
 
 //@Mod(ctl.MODID)
 public class BlockInit {
@@ -28,4 +20,8 @@ public class BlockInit {
             simpleCraftingTableBlock::new);
     public static final RegistryObject<Block> BONFIRE_BLOCK = BLOCKS.register("bonfire",
             bonfireBlock::new);
+    public static final RegistryObject<Block> COPPER_ORE_GRAVEL = BLOCKS.register("copper_ore_gravel",
+            CopperOreGravel::new);
+    public static final RegistryObject<Block> TIN_ORE_GRAVEL = BLOCKS.register("tin_ore_gravel",
+            TinOreGravel::new);
 }

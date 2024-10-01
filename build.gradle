@@ -3,7 +3,7 @@ buildscript {
         // These repositories are only for Gradle plugins, put any other repositories in the repository block further below
         maven { url = 'https://repo.spongepowered.org/repository/maven-public/' }
         mavenCentral()
-        jcenter()
+        //jcenter()
     }
     dependencies {
         classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
@@ -133,6 +133,7 @@ repositories {
     // flatDir {
     //     dir 'libs'
     // }
+    maven {	name = "BlameJared";	url = "https://maven.blamejared.com/" }			// IE & CT Files
     maven {
         // Shedaniel's maven (Architectury API)
         url = "https://maven.architectury.dev"
@@ -151,6 +152,13 @@ repositories {
 
     maven {
         url 'https://modmaven.dev/'
+    }
+
+    maven {
+        url "https://www.cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
     }
 }
 
@@ -173,22 +181,17 @@ dependencies {
     // then special handling is done to allow a setup of a vanilla dependency without the use of an external repository.
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
-    //implementation 'net.minecraftforge:ForgeAutoRenamingTool:1.4.3'
-//
-//    compileOnly "mekanism:Mekanism:${mekanism_version}:api"
-////
-////    // If you want to test/use Mekanism & its modules during `runClient` invocation, use the following
-//    runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}")// Mekanism
-//    runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:additions")// Mekanism: Additions
-//    runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:generators")// Mekanism: Generators
-//    runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:tools")// Mekanism: Tools
-////
-////    // ForgeGradle
-    //implementation fg.deobf("dev.latvian.mods:kubejs-forge:${kubejs_version}")
-//
-//    // these two are unfortunately needed since fg.deobf doesn't respect transitive dependencies yet
-    //implementation fg.deobf("dev.latvian.mods:rhino-forge:${rhino_version}")
-    //implementation fg.deobf("dev.architectury:architectury-forge:${architectury_version}")
+    implementation fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:${version_ie}")
+    compileOnly fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:${version_ie}:api")
+
+    //compileOnly "mekanism:Mekanism:${mekanism_version}:api"
+
+    // If you want to test/use Mekanism & its modules during `runClient` invocation, use the following
+    implementation fg.deobf("mekanism:Mekanism:${mekanism_version}")// Mekanism
+    //runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:additions")// Mekanism: Additions
+    //runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:generators")// Mekanism: Generators
+    //runtimeOnly fg.deobf("mekanism:Mekanism:${mekanism_version}:tools")// Mekanism: Tools
+    //datagenImplementation fg.deobf("blusunrize.immersiveengineering:ImmersiveEngineering:${version_ie}:datagen")
 
     // Example mod dependency with JEI - using fg.deobf() ensures the dependency is remapped to your development mappings
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime
@@ -200,9 +203,6 @@ dependencies {
     // This maps to ./libs/coolmod-${mc_version}-${coolmod_version}.jar
     // The group id is ignored when searching -- in this case, it is "blank"
     // implementation fg.deobf("blank:coolmod-${mc_version}:${coolmod_version}")
-    // ForgeGradle
-//    implementation fg.deobf("dev.latvian.mods:kubejs-forge:${kubejs_version}")
-//
 //// these two are unfortunately needed since fg.deobf doesn't respect transitive dependencies yet
 //    implementation fg.deobf("dev.latvian.mods:rhino-forge:${rhino_version}")
 //    implementation fg.deobf("dev.architectury:architectury-forge:${architectury_version}")

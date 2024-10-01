@@ -1,0 +1,5 @@
+{
+  "variants": {
+      "":{"model": "ctl:block/copper_ore_gravel"}
+  }
+}

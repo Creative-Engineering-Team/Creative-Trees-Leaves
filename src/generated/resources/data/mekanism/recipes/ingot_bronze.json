@@ -1,0 +1,10 @@
+{
+  "type": "minecraft:campfire_cooking",
+  "category": "food",
+  "cookingtime": 14000,
+  "experience": 0.0,
+  "ingredient": {
+    "item": "ctl:nugget_tin_and_copper"
+  },
+  "result": "mekanism:ingot_bronze"
+}

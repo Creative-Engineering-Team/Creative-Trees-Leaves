@@ -6,8 +6,8 @@ import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.LanguageProvider;
 
 public class ctlLanguageProviderEnUs extends LanguageProvider {
-    public ctlLanguageProviderEnUs(PackOutput output, String modid, String locale) {
-        super(output, modid, locale);
+    public ctlLanguageProviderEnUs(PackOutput output) {
+        super(output, ctl.MODID, "en_us");
     }
 
     @Override
@@ -40,5 +40,8 @@ public class ctlLanguageProviderEnUs extends LanguageProvider {
         this.add(ItemInit.SIMPLE_FLINT_AND_STEEL.get(),"Simple flint & sheet");
         //this.add(ItemInit.BONFIRE_BLOCK_ITEM.get(),"Bonfire");
         this.add(BlockInit.BONFIRE_BLOCK.get(),"Bonfire");
+        this.add(BlockInit.COPPER_ORE_GRAVEL.get(),"Copper Gravel");
+        this.add(BlockInit.TIN_ORE_GRAVEL.get(),"Tin Gravel");
+        this.add(ItemInit.NUGGET_TIN_AND_COPPER.get(), "Copper-tin Mixed Grains");
     }
 }

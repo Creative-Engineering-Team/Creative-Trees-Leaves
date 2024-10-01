@@ -1,19 +1,16 @@
 package com.xiaoliua.ctl.Blocks;
 
-import com.xiaoliua.ctl.Enums.hayrackPutProperty;
-import com.xiaoliua.ctl.Enums.hayrackPuts;
 import com.xiaoliua.ctl.Items.ItemInit;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
+import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -24,9 +21,10 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
-import net.minecraft.world.level.block.state.properties.IntegerProperty;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -39,13 +37,19 @@ public class hayrackBlock extends BaseEntityBlock{
     //public static final IntegerProperty StartTime = IntegerProperty.create("start_timet",0,70);
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     //public static final IntegerProperty hayrack_gets_num = IntegerProperty.create("hayrack_gets_num",0,100);
+    protected static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 15.99D, 16.0D);
     protected hayrackBlock() {
         super(Properties.of().strength(3f).noOcclusion().sound(SoundType.WOOD)
-                .requiresCorrectToolForDrops());
+                .requiresCorrectToolForDrops().pushReaction(PushReaction.DESTROY).forceSolidOff());
         this.registerDefaultState(this.defaultBlockState().setValue(HaveLeaf,false));
         this.registerDefaultState(this.defaultBlockState().setValue(LeafOK,false));
         //this.registerDefaultState(this.defaultBlockState().setValue(StartTime,0));
         //this.registerDefaultState(this.defaultBlockState().setValue(EndTimet,true));`
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState p_60555_, BlockGetter p_60556_, BlockPos p_60557_, CollisionContext p_60558_) {
+        return SHAPE;
     }
 
 //    @Override
@@ -185,5 +189,49 @@ public class hayrackBlock extends BaseEntityBlock{
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level p_153212_, BlockState p_153213_, BlockEntityType<T> p_153214_) {
         return p_153212_.isClientSide ? null : createTickerHelper(p_153214_,BlockEntityInit.HAYRACK_BLOCK_ENTITY.get(),
                 hayrackBlockEntity::serverTick);
+    }
+
+//    @Override
+//    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+//        //ctl.LOGGER.debug("nc" + level.getFluidState(fromPos).getType()+level.getBlockState(fromPos));
+//        if (level.getFluidState(fromPos).getType() == Fluids.FLOWING_WATER || level.getFluidState(fromPos).getType() == Fluids.WATER) {
+//            breakBlockAndDropItem(level, pos, state);
+//        }
+//    }
+
+    private void breakBlockAndDropItem(Level level, BlockPos pos, BlockState state) {
+        //ctl.LOGGER.debug("nc1");
+        Block.dropResources(state, level, pos);
+        level.removeBlock(pos, false);
+    }
+
+    @Override
+    public void onRemove(BlockState p_60515_, Level p_60516_, BlockPos p_60517_, BlockState p_60518_, boolean p_60519_) {
+        if (!p_60518_.is(BlockInit.HAYRACK_BLOCK.get())) {
+            ItemStack itemStack = null;
+            if (p_60515_.getValue(HaveLeaf)) {
+                if (p_60515_.getValue(LeafOK)) {
+                    var hayrackBlockEntity = (com.xiaoliua.ctl.Blocks.hayrackBlockEntity) p_60516_.getBlockEntity(p_60517_);
+                    //p_60506_.setItemSlot(EquipmentSlot.MAINHAND,new ItemStack(ItemInit.DRY_LEAF.get(),64));
+                    if (Objects.equals(hayrackBlockEntity.putsType(), "leaf")) {
+                        itemStack = new ItemStack(ItemInit.DRY_LEAF.get(), hayrackBlockEntity.getLeafNum());
+                    } else {
+                        itemStack = new ItemStack(ItemInit.DRY_PLIABLE_BRANCH.get(), hayrackBlockEntity.getLeafNum());
+                    }
+                } else {
+                    var hayrackBlockEntity = (com.xiaoliua.ctl.Blocks.hayrackBlockEntity) p_60516_.getBlockEntity(p_60517_);
+                    //p_60506_.setItemSlot(EquipmentSlot.MAINHAND,new ItemStack(ItemInit.DRY_LEAF.get(),64));
+                    if (Objects.equals(hayrackBlockEntity.putsType(), "leaf")) {
+                        itemStack = new ItemStack(ItemInit.LEAF.get(), hayrackBlockEntity.getLeafNum());
+                    } else {
+                        itemStack = new ItemStack(ItemInit.PLIABLE_BRANCH.get(), hayrackBlockEntity.getLeafNum());
+                    }
+                }
+            }
+            if (itemStack != null) {
+                Containers.dropItemStack(p_60516_, p_60517_.getX(), p_60517_.getY(), p_60517_.getZ(), itemStack);
+            }
+        }
+        super.onRemove(p_60515_, p_60516_, p_60517_, p_60518_, p_60519_);
     }
 }

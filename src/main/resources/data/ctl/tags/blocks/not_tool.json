@@ -8,6 +8,9 @@
     "minecraft:podzol",
     "minecraft:coarse_dirt",
     "#minecraft:sand",
-    "minecraft:shulker_box"
+    "minecraft:shulker_box",
+    "ctl:hayrack",
+    "ctl:copper_ore_gravel",
+    "ctl:tin_ore_gravel"
   ]
 }

@@ -1,8 +1,6 @@
 package com.xiaoliua.ctl.Blocks;
 
 import com.xiaoliua.ctl.Config;
-import com.xiaoliua.ctl.Enums.hayrackPuts;
-import com.xiaoliua.ctl.ctl;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
@@ -12,7 +10,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class hayrackBlockEntity extends BlockEntity {
     private int NeedTick = 0;
     private int LeafNum = 0;
-    private String puts;
+    private String puts = "";
     public hayrackBlockEntity(BlockPos p_155229_, BlockState p_155230_) {
         super(BlockEntityInit.HAYRACK_BLOCK_ENTITY.get(), p_155229_, p_155230_);
     }
@@ -21,12 +19,12 @@ public class hayrackBlockEntity extends BlockEntity {
         //pBlockEntity.NeedTick = pState.getValue(hayrackBlock.StartTime);
         //pBlockEntity.LeafNum= pState.getValue(hayrackBlock.EndTimet);
         if (pBlockEntity.LeafOk()) return;
-        ctl.LOGGER.info("BLock {} tick", pState.getBlock());
+        //ctl.LOGGER.info("BLock {} tick", pState.getBlock());
         if (pLevel!=null && !pLevel.isClientSide){
             if (pState.getValue(hayrackBlock.HaveLeaf) && !pState.getValue(hayrackBlock.LeafOK)){
                 pBlockEntity.LeafTick();
-                ctl.LOGGER.info("hayrack {} change from {} to {}", pState.getBlock(),pBlockEntity.NeedTick+1,
-                        pBlockEntity.NeedTick);
+//                ctl.LOGGER.info("hayrack {} change from {} to {}", pState.getBlock(),pBlockEntity.NeedTick+1,
+//                        pBlockEntity.NeedTick);
                 //pLevel.setBlock(pPos,pState,3);
             }
             if (pBlockEntity.LeafOk()){

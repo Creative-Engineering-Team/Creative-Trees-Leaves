@@ -1,0 +1,5 @@
+{
+  "variants": {
+      "":{"model": "ctl:block/tin_ore_gravel"}
+  }
+}

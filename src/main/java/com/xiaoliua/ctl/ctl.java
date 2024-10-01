@@ -10,14 +10,14 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Containers;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
@@ -57,8 +57,9 @@ public class ctl
     // Create a Deferred Register to hold CreativeModeTabs which will all be registered under the "ctl" namespace
     public static final DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS = DeferredRegister.create(Registries.CREATIVE_MODE_TAB, MODID);
     // Creates a creative tab with the id "ctl:ctl_tab" for the ctl item, that is placed after the combat tab
+    @SuppressWarnings("unused")
     public static final RegistryObject<CreativeModeTab> CTL_TAB = CREATIVE_MODE_TABS.register("ctl_tab", () -> CreativeModeTab.builder()
-            .withTabsBefore(CreativeModeTabs.COMBAT)
+            //.withTabsBefore(CreativeModeTabs.COMBAT)
             .icon(() -> ItemInit.LEAF.get().getDefaultInstance())
             .displayItems((parameters, output) -> {
                 output.accept(ItemInit.LEAF.get());// Add the ctl item to the tab. For your own tabs, this method is preferred over the event
@@ -86,6 +87,9 @@ public class ctl
                 output.accept(ItemInit.POTTERY_SWORD.get());
                 output.accept(ItemInit.BONFIRE_BLOCK_ITEM.get());
                 output.accept(ItemInit.SIMPLE_FLINT_AND_STEEL.get());
+                output.accept(ItemInit.NUGGET_TIN_AND_COPPER.get());
+                output.accept(BlockInit.TIN_ORE_GRAVEL.get());
+                output.accept(BlockInit.COPPER_ORE_GRAVEL.get());
             })
             .title(Component.literal("Creative Trees & Leaves")).build());
     //Create a List to match the blocks
@@ -145,6 +149,7 @@ public class ctl
 
     public ctl()
     {
+        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
         LOGGER.info("Welcome use ctl,version: "+version.toString() + " by xiaoliu_a&mc100212");
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         // Register the commonSetup method for mod loading
@@ -176,8 +181,16 @@ public class ctl
             Player player = event.getPlayer();
             Block block = event.getState().getBlock();
             if (block == BlockInit.BONFIRE_BLOCK.get() && player.getMainHandItem().getItem().equals(Items.AIR)){
+                if (!event.getState().getValue(bonfireBlock.LIT) && !event.getState().getValue(bonfireBlock.COMPLETED)){
+                    return;
+                }
                 bonfireBlock.hurtByFire(event.getState(),player.level(),
-                        event.getPos(),player);
+                        event.getPos(),player,true,1);
+            }
+            if ((block == BlockInit.COPPER_ORE_GRAVEL.get() || block == BlockInit.TIN_ORE_GRAVEL.get())
+                    && !(player.getMainHandItem().getItem() instanceof ShovelItem)){
+                Containers.dropItemStack((Level) event.getLevel(),event.getPos().getX(),event.getPos().getY(),event.getPos().getZ(),
+                        new ItemStack(Items.GRAVEL,1));
             }
         });
         MinecraftForge.EVENT_BUS.addListener((PlayerEvent.ItemCraftedEvent event) -> {
@@ -220,8 +233,20 @@ public class ctl
                 //}
             }
         });
+        MinecraftForge.EVENT_BUS.addListener((BlockEvent.FluidPlaceBlockEvent event) ->{
+            //LOGGER.debug("ev");
+            Level world = (Level) event.getLevel();
+            BlockPos pos = event.getPos();
+            if (world.getFluidState(pos).getType() == Fluids.WATER || world.getFluidState(pos).getType() == Fluids.FLOWING_WATER) {
+                Block block = world.getBlockState(pos).getBlock();
+                //LOGGER.debug("ev1");
+                if (block == BlockInit.BONFIRE_BLOCK.get() || block  == BlockInit.HAYRACK_BLOCK.get()) {
+                    world.destroyBlock(pos, true);
+                }
+            }
+        });
         // Register our mod's ForgeConfigSpec so that Forge can create and load the config file for us
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
+        //ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
 
     public static float modifyBreakSpeed(Player player, BlockState state, @Nullable BlockPos pos, float speed)
@@ -278,11 +303,8 @@ public class ctl
     public static Item.Properties copyPropertiesFrom(Item existingItem) {
         Item.Properties properties = new Item.Properties();
 
-        // 手动复制常见的属性
         properties.stacksTo(existingItem.getMaxStackSize());
         properties.durability(existingItem.getMaxDamage());
-
-        // 根据需要添加其他属性
 
         return properties;
     }
@@ -306,8 +328,6 @@ public class ctl
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event)
     {
-        RecipeManager recipeManager = event.getServer().getRecipeManager();
-        ResourceLocation woodenAxeRecipeId = new ResourceLocation("minecraft", "wooden_axe");
     }
 
     // You can use EventBusSubscriber to automatically register all static methods in the class annotated with @SubscribeEvent

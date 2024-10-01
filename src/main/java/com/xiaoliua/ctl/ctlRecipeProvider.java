@@ -1,15 +1,19 @@
 package com.xiaoliua.ctl;
 
+import blusunrize.immersiveengineering.api.EnumMetals;
+import blusunrize.immersiveengineering.common.register.IEItems;
 import com.xiaoliua.ctl.Blocks.BlockInit;
 import com.xiaoliua.ctl.Items.ItemInit;
+import mekanism.common.registries.MekanismItems;
+import mekanism.common.resource.PrimaryResource;
+import mekanism.common.resource.ResourceType;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
-import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class ctlRecipeProvider extends RecipeProvider {
@@ -173,6 +177,20 @@ public class ctlRecipeProvider extends RecipeProvider {
         SimpleCookingRecipeBuilder.campfireCooking(Ingredient.of(ItemInit.UNFIRED_CLAY_AXE.get()),RecipeCategory.MISC,
                         ItemInit.UNASSEMBLED_POTTERY_AXE.get(), 0f,1200)
                 .unlockedBy("has_clay_ball",has(Items.CLAY_BALL))
+                .save(p_251297_);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC,ItemInit.NUGGET_TIN_AND_COPPER.get())
+                .pattern("ccc")
+                .pattern("ctc")
+                .pattern("ccc")
+                .define('c', IEItems.Metals.NUGGETS.get(EnumMetals.COPPER))
+                .define('t', Objects.requireNonNull(MekanismItems.PROCESSED_RESOURCES.get(ResourceType.NUGGET, PrimaryResource.TIN)))
+                .unlockedBy("has_nugget_copper",has(IEItems.Metals.NUGGETS.get(EnumMetals.COPPER)))
+                .save(p_251297_);
+
+        SimpleCookingRecipeBuilder.campfireCooking(Ingredient.of(ItemInit.NUGGET_TIN_AND_COPPER.get()),RecipeCategory.MISC,
+                MekanismItems.BRONZE_INGOT, 0f,14000)
+                .unlockedBy("has_nugget_tin_and_copper",has(ItemInit.NUGGET_TIN_AND_COPPER.get()))
                 .save(p_251297_);
     }
 }

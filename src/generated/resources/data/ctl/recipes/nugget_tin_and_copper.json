@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "c": {
+      "item": "immersiveengineering:nugget_copper"
+    },
+    "t": {
+      "item": "mekanism:nugget_tin"
+    }
+  },
+  "pattern": [
+    "ccc",
+    "ctc",
+    "ccc"
+  ],
+  "result": {
+    "item": "ctl:nugget_tin_and_copper"
+  },
+  "show_notification": true
+}

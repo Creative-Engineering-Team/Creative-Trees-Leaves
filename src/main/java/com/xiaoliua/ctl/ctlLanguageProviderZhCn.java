@@ -6,8 +6,8 @@ import net.minecraft.data.PackOutput;
 import net.minecraftforge.common.data.LanguageProvider;
 
 public class ctlLanguageProviderZhCn extends LanguageProvider {
-    public ctlLanguageProviderZhCn(PackOutput output, String modid, String locale) {
-        super(output, modid, locale);
+    public ctlLanguageProviderZhCn(PackOutput output) {
+        super(output, ctl.MODID, "zh_cn");
     }
 
     @Override
@@ -40,5 +40,8 @@ public class ctlLanguageProviderZhCn extends LanguageProvider {
         this.add(ItemInit.SIMPLE_FLINT_AND_STEEL.get(),"简易打火石");
         //this.add(ItemInit.BONFIRE_BLOCK_ITEM.get(),"火堆");
         this.add(BlockInit.BONFIRE_BLOCK.get(),"火堆");
+        this.add(BlockInit.COPPER_ORE_GRAVEL.get(),"铜矿沙砾");
+        this.add(BlockInit.TIN_ORE_GRAVEL.get(),"锡矿沙砾");
+        this.add(ItemInit.NUGGET_TIN_AND_COPPER.get(), "铜锡混合粒");
     }
 }

@@ -15,8 +15,10 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.crafting.CampfireCookingRecipe;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -38,6 +40,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -47,20 +50,22 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 import java.util.function.ToIntFunction;
 
-public class bonfireBlock extends BaseEntityBlock implements SimpleWaterloggedBlock {
+public class bonfireBlock extends BaseEntityBlock {
     public static final BooleanProperty LIT = BlockStateProperties.LIT;
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
     public static final BooleanProperty IGNITABLE = BooleanProperty.create("ignitable");
     public static final BooleanProperty HAS_FUEL = BooleanProperty.create("fuel");
+    public static final BooleanProperty COMPLETED = BooleanProperty.create("completed");
     public static final boolean HurtFrostWalker = false;
     protected static final VoxelShape SHAPE = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 7.0D, 16.0D);
     protected bonfireBlock() {
         super(Properties.of().mapColor(MapColor.PODZOL).instrument(NoteBlockInstrument.BASS)
                 .strength(2.0F).sound(SoundType.WOOD).lightLevel(litBlockEmission(15))
-                .noOcclusion().ignitedByLava());
+                .noOcclusion().ignitedByLava().pushReaction(PushReaction.DESTROY).forceSolidOff());
         this.registerDefaultState(this.stateDefinition.any().setValue(LIT, Boolean.FALSE).setValue(FACING, Direction.NORTH)
-                .setValue(WATERLOGGED,false).setValue(HAS_FUEL,false).setValue(IGNITABLE,false));
+                .setValue(WATERLOGGED,false).setValue(HAS_FUEL,false).setValue(IGNITABLE,false)
+                .setValue(COMPLETED,false));
 
     }
 
@@ -70,15 +75,15 @@ public class bonfireBlock extends BaseEntityBlock implements SimpleWaterloggedBl
         };
     }
 
-    public static void hurtByFire(BlockState state, Level world, BlockPos pos, Entity entity){
+    public static void hurtByFire(BlockState state, Level world, BlockPos pos, Entity entity,boolean ignoreLit,int damage){
         if (entity == null){
             return;
         }
-        if (state.getValue(LIT)&& entity instanceof LivingEntity){
+        if ((ignoreLit || state.getValue(LIT))&& entity instanceof LivingEntity){
             if (EnchantmentHelper.hasFrostWalker((LivingEntity) entity) && !HurtFrostWalker){
                 return;
             }
-            entity.hurt(world.damageSources().inFire(),1);
+            entity.hurt(world.damageSources().inFire(),damage);
         }
     }
 
@@ -124,7 +129,7 @@ public class bonfireBlock extends BaseEntityBlock implements SimpleWaterloggedBl
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> p_49915_) {
-        p_49915_.add(LIT,FACING,WATERLOGGED,HAS_FUEL,IGNITABLE);
+        p_49915_.add(LIT,FACING,WATERLOGGED,HAS_FUEL,IGNITABLE,COMPLETED);
         //super.createBlockStateDefinition(p_49915_);
     }
 
@@ -141,7 +146,7 @@ public class bonfireBlock extends BaseEntityBlock implements SimpleWaterloggedBl
 
     @Override
     public void entityInside(BlockState p_60495_, Level p_60496_, BlockPos p_60497_, Entity p_60498_) {
-        hurtByFire(p_60495_,p_60496_,p_60497_,p_60498_);
+        hurtByFire(p_60495_,p_60496_,p_60497_,p_60498_,false,1);
         super.entityInside(p_60495_, p_60496_, p_60497_, p_60498_);
     }
 
@@ -153,25 +158,25 @@ public class bonfireBlock extends BaseEntityBlock implements SimpleWaterloggedBl
         return super.updateShape(p_60541_, p_60542_, p_60543_, p_60544_, p_60545_, p_60546_);
     }
 
-    @Override
-    public boolean placeLiquid(LevelAccessor p_51257_, BlockPos p_51258_, BlockState p_51259_, FluidState p_51260_) {
-        if (!p_51259_.getValue(BlockStateProperties.WATERLOGGED) && p_51260_.getType() == Fluids.WATER) {
-            boolean flag = p_51259_.getValue(LIT);
-            if (flag) {
-                if (!p_51257_.isClientSide()) {
-                    p_51257_.playSound(null, p_51258_, SoundEvents.GENERIC_EXTINGUISH_FIRE, SoundSource.BLOCKS, 1.0F, 1.0F);
-                }
-
-                dowse(null, p_51257_, p_51258_, p_51259_);
-            }
-
-            p_51257_.setBlock(p_51258_, p_51259_.setValue(WATERLOGGED, Boolean.valueOf(true)).setValue(LIT, Boolean.valueOf(false)), 3);
-            p_51257_.scheduleTick(p_51258_, p_51260_.getType(), p_51260_.getType().getTickDelay(p_51257_));
-            return true;
-        } else {
-            return false;
-        }
-    }
+//    @Override
+//    public boolean placeLiquid(LevelAccessor p_51257_, BlockPos p_51258_, BlockState p_51259_, FluidState p_51260_) {
+//        if (!p_51259_.getValue(BlockStateProperties.WATERLOGGED) && p_51260_.getType() == Fluids.WATER) {
+//            boolean flag = p_51259_.getValue(LIT);
+//            if (flag) {
+//                if (!p_51257_.isClientSide()) {
+//                    p_51257_.playSound(null, p_51258_, SoundEvents.GENERIC_EXTINGUISH_FIRE, SoundSource.BLOCKS, 1.0F, 1.0F);
+//                }
+//
+//                dowse(null, p_51257_, p_51258_, p_51259_);
+//            }
+//
+//            p_51257_.setBlock(p_51258_, p_51259_.setValue(WATERLOGGED, Boolean.valueOf(true)).setValue(LIT, Boolean.valueOf(false)), 3);
+//            p_51257_.scheduleTick(p_51258_, p_51260_.getType(), p_51260_.getType().getTickDelay(p_51257_));
+//            return true;
+//        } else {
+//            return false;
+//        }
+//    }
 
     @Override
     public void onProjectileHit(Level p_51244_, BlockState p_51245_, BlockHitResult p_51246_, Projectile p_51247_) {
@@ -190,7 +195,18 @@ public class bonfireBlock extends BaseEntityBlock implements SimpleWaterloggedBl
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player,
                                  InteractionHand hand, BlockHitResult result) {
         BlockEntity blockEntity = level.getBlockEntity(pos);
-        if (player.getMainHandItem().is(Items.STICK) && !state.getValue(HAS_FUEL)){
+        if (state.getValue(COMPLETED)){
+            level.setBlock(pos, state.setValue(COMPLETED, false), 3);
+            if (!player.getMainHandItem().getItem().equals(Items.STICK) && !(player.getMainHandItem().getItem() instanceof DiggerItem) &&
+                    !(player.getMainHandItem().getItem() instanceof TieredItem)){
+                hurtByFire(state,level,pos,player,true,3);
+                hurtByFire(state,level,pos,player,true,3);
+                hurtByFire(state,level,pos,player,true,3);
+            }
+            bonfireBlockEntity bonfireBlockEntity = (com.xiaoliua.ctl.Blocks.bonfireBlockEntity) blockEntity;
+            com.xiaoliua.ctl.Blocks.bonfireBlockEntity.out(level,pos,state,bonfireBlockEntity);
+            return InteractionResult.SUCCESS;
+        } else if (player.getMainHandItem().is(Items.STICK) && !state.getValue(HAS_FUEL)){
             if (!level.isClientSide) {
                 level.setBlock(pos, state.setValue(HAS_FUEL, true), 3);
                 level.gameEvent(GameEvent.BLOCK_CHANGE, pos, GameEvent.Context.of(player,
@@ -209,7 +225,7 @@ public class bonfireBlock extends BaseEntityBlock implements SimpleWaterloggedBl
             if (optional.isPresent()){
                 if (!level.isClientSide && bonfireblockentity.placeFood(player,player.getAbilities().instabuild ?
                         itemStack.copy() : itemStack,optional.get().getCookingTime())){
-                    level.setBlock(pos,state.setValue(IGNITABLE,true),3);
+                    level.setBlock(pos,state.setValue(IGNITABLE,true),11);
                     return InteractionResult.SUCCESS;
                 }
                 return InteractionResult.CONSUME;
@@ -248,5 +264,28 @@ public class bonfireBlock extends BaseEntityBlock implements SimpleWaterloggedBl
                 }
             }
         }
+    }
+//    @Override
+//    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block block, BlockPos fromPos, boolean isMoving) {
+//        //ctl.LOGGER.debug("nc" + level.getFluidState(fromPos).getType()+level.getBlockState(fromPos));
+//        if (level.getFluidState(fromPos).getType() == Fluids.FLOWING_WATER || level.getFluidState(fromPos).getType() == Fluids.WATER) {
+//            breakBlockAndDropItem(level, pos, state);
+//        }
+//    }
+
+    private void breakBlockAndDropItem(Level level, BlockPos pos, BlockState state) {
+        //ctl.LOGGER.debug("nc1");
+        Block.dropResources(state, level, pos);
+        level.removeBlock(pos, false);
+    }
+
+    @Override
+    public void onRemove(BlockState p_60515_, Level p_60516_, BlockPos p_60517_, @NotNull BlockState p_60518_, boolean p_60519_) {
+        ctl.LOGGER.debug("{} {} {} {} {}", p_60515_, p_60516_, p_60517_, p_60518_, p_60519_);
+        if (!p_60518_.is(BlockInit.BONFIRE_BLOCK.get())){
+            bonfireBlockEntity bonfireBlockEntity = (com.xiaoliua.ctl.Blocks.bonfireBlockEntity) p_60516_.getBlockEntity(p_60517_);
+            com.xiaoliua.ctl.Blocks.bonfireBlockEntity.out(p_60516_,p_60517_,p_60515_,bonfireBlockEntity);
+        }
+        super.onRemove(p_60515_, p_60516_, p_60517_, p_60518_, p_60519_);
     }
 }

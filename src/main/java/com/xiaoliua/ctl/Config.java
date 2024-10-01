@@ -1,25 +1,19 @@
 package com.xiaoliua.ctl;
 
-import com.xiaoliua.ctl.Items.ItemInit;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.loot.LootTableProvider;
-import net.minecraft.data.loot.LootTableSubProvider;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParamSet;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.data.ExistingFileHelper;
 import net.minecraftforge.data.event.GatherDataEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -43,7 +37,8 @@ public class Config
             "ctl:pottery_axe",
             "ctl:pottery_pickaxe",
             "ctl:pottery_shovel",
-            "ctl:pottery_sword"
+            "ctl:pottery_sword",
+            "ctl:nugget_tin_and_copper"
     };
 
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder()
@@ -53,38 +48,29 @@ public class Config
     public static final ForgeConfigSpec.IntValue WAITING_TIME = BUILDER
             .comment("Hayrack wait time(tick)")
             .defineInRange("wait_time",600,0,Integer.MAX_VALUE);
-
     public static final ForgeConfigSpec.BooleanValue USE_MINE_ABLE = BUILDER
             .comment("Use mine able")
             .define("useMineAble",true);
-
-    private static final ForgeConfigSpec.BooleanValue LOG_DIRT_BLOCK = BUILDER
-            .comment("Whether to log the dirt block on common setup")
-            .define("logDirtBlock", true);
-
-    private static final ForgeConfigSpec.IntValue MAGIC_NUMBER = BUILDER
-            .comment("A magic number")
-            .defineInRange("magicNumber", 42, 0, Integer.MAX_VALUE);
-
     public static final ForgeConfigSpec.ConfigValue<String> MAGIC_NUMBER_INTRODUCTION = BUILDER
             .comment("What you want the introduction message to be for the magic number")
             .define("magicNumberIntroduction", "The magic number is... ");
-
+    private static final ForgeConfigSpec.BooleanValue LOG_DIRT_BLOCK = BUILDER
+            .comment("Whether to log the dirt block on common setup")
+            .define("logDirtBlock", true);
+    private static final ForgeConfigSpec.IntValue MAGIC_NUMBER = BUILDER
+            .comment("A magic number")
+            .defineInRange("magicNumber", 42, 0, Integer.MAX_VALUE);
     // a list of strings that are treated as resource locations for items
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> ITEM_STRINGS = BUILDER
             .comment("A list of items to log on common setup.")
             .defineListAllowEmpty("items", List.of("minecraft:iron_ingot"), Config::validateItemName);
-
     private static final ForgeConfigSpec.ConfigValue<Boolean> ALLOW_WOODEN = BUILDER
             .comment("allow wooden tools")
             .define("allowWooden",true);
-
     private static final ForgeConfigSpec.ConfigValue<List<? extends String>> CAN_CRAFT_WITH_SIMPLE_CRAFTING_TABLE = BUILDER
-            .comment("can craft with simple crafting table's  items")
+            .comment("can craft with simple crafting table's items")
             .define("craftingBySimpleCraftingTable", List.of(itemsBySCT));
-
-    static final ForgeConfigSpec SPEC = BUILDER.build();
-
+    public static final ForgeConfigSpec SPEC = BUILDER.pop().build();
     public static boolean logDirtBlock;
     public static int magicNumber;
     public static String magicNumberIntroduction;
@@ -129,7 +115,6 @@ public class Config
 
         event.getGenerator().addProvider(
                 event.includeServer(),
-                //(DataProvider.Factory<ctlRecipeProvider>) pOutput -> new ctlRecipeProvider(pOutput,lp)
                 (DataProvider.Factory<ctlRecipeProvider>) ctlRecipeProvider::new
         );
 
@@ -143,17 +128,27 @@ public class Config
 
         event.getGenerator().addProvider(
                 event.includeServer(),
-                (DataProvider.Factory<ctlBlockTagProvider>) pOutput -> new ctlBlockTagProvider(pOutput,lp,ctl.MODID,efh)
+                (DataProvider.Factory<ctlBlockTagProvider>) pOutput -> new ctlBlockTagProvider(pOutput,lp,efh)
         );
 
         event.getGenerator().addProvider(
                 event.includeClient(),
-                (DataProvider.Factory<ctlLanguageProviderEnUs>) pOutput -> new ctlLanguageProviderEnUs(pOutput,ctl.MODID,"en_us")
+                (DataProvider.Factory<ctlLanguageProviderEnUs>) ctlLanguageProviderEnUs::new
         );
 
         event.getGenerator().addProvider(
                 event.includeClient(),
-                (DataProvider.Factory<ctlLanguageProviderZhCn>) pOutput -> new ctlLanguageProviderZhCn(pOutput,ctl.MODID,"zh_cn")
+                (DataProvider.Factory<ctlLanguageProviderZhCn>) ctlLanguageProviderZhCn::new
+        );
+
+//        event.getGenerator().addProvider(
+//                event.includeServer(),
+//                (DataProvider.Factory<ctlWorldGenProvider>) pOutput -> new ctlWorldGenProvider(pOutput,lp)
+//        );
+
+        event.getGenerator().addProvider(
+                event.includeServer(),
+                (DataProvider.Factory<ctlWorldGen>) pOutput -> new ctlWorldGen(pOutput,lp)
         );
     }
 }
