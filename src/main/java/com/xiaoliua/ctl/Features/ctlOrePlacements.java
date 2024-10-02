@@ -32,13 +32,13 @@ public class ctlOrePlacements {
                 pContext,
                 COPPER_ORE_GRAVEL_ORE,
                 oreCopoerHolder,
-                commonOrePlacement(40, HeightRangePlacement.uniform(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(255)))
+                commonOrePlacement(80, HeightRangePlacement.uniform(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(255)))
         );
         PlacementUtils.register(
                 pContext,
                 TIN_ORE_GRAVEL_ORE,
                 oreTinHolder,
-                commonOrePlacement(60,HeightRangePlacement.uniform(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(255)))
+                commonOrePlacement(80,HeightRangePlacement.uniform(VerticalAnchor.absolute(-64), VerticalAnchor.absolute(255)))
         );
     }
 

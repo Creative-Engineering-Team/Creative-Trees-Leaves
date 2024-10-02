@@ -2,20 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "i": {
-      "item": "minecraft:iron_ingot"
+    "p": {
+      "item": "minecraft:leather"
     },
-    "t": {
-      "item": "minecraft:copper_ingot"
-    },
-    "w": {
-      "tag": "ctl:planks"
+    "s": {
+      "item": "minecraft:stick"
     }
   },
   "pattern": [
-    "iti",
-    "www",
-    "iti"
+    "ps",
+    "ss"
   ],
   "result": {
     "item": "ctl:simple_crafting_table"

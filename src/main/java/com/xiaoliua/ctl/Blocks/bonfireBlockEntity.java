@@ -37,10 +37,10 @@ public class bonfireBlockEntity extends BlockEntity {
     }
 
     public static void cookTick(Level p_155307_, BlockPos p_155308_, BlockState p_155309_, bonfireBlockEntity p_155310_) {
-//        if (p_155309_.getValue(bonfireBlock.IGNITABLE)) {
-//            p_155307_.setBlock(p_155308_, p_155309_.setValue(bonfireBlock.IGNITABLE, false)
-//                    .setValue(bonfireBlock.HAS_FUEL,false), 11);
-//        }
+        if (p_155309_.getValue(bonfireBlock.IGNITABLE)) {
+            p_155307_.setBlock(p_155308_, p_155309_.setValue(bonfireBlock.IGNITABLE, false)
+                    .setValue(bonfireBlock.HAS_FUEL,false), 11);
+        }
         //ctl.LOGGER.debug("bonfire tick");
         boolean flag = false;
 
@@ -48,7 +48,7 @@ public class bonfireBlockEntity extends BlockEntity {
             ItemStack itemstack = p_155310_.items.get(i);
             if (!itemstack.isEmpty()) {
                 flag = true;
-                //int j = p_155310_.cookingProgress[i]++;
+                int j = p_155310_.cookingProgress[i]++;
                 if (p_155310_.cookingProgress[i] >= p_155310_.cookingTime[i]) {
                     Container container = new SimpleContainer(itemstack);
                     ItemStack itemstack1 = p_155310_.quickCheck.getRecipeFor(container, p_155307_)

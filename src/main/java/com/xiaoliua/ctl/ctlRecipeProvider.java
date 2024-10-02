@@ -11,6 +11,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Objects;
@@ -98,14 +99,21 @@ public class ctlRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_clay_ball",has(Items.CLAY_BALL))
                 .save(p_251297_);
 
-        ShapedRecipeBuilder.shaped(RecipeCategory.MISC,ItemInit.SIMPLE_CRAFTING_TABLE_BLOCK.get())
-                .pattern("iti")
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, Blocks.CRAFTING_TABLE)
+                .pattern("iii")
                 .pattern("www")
-                .pattern("iti")
-                .define('i',Items.IRON_INGOT)
-                .define('t', Items.COPPER_INGOT)
+                .pattern("iii")
+                .define('i',MekanismItems.BRONZE_INGOT)
                 .define('w', TagsInit.Items.Planks)
                 .unlockedBy("has_iron_ingot",has(Items.IRON_INGOT))
+                .save(p_251297_);
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC,BlockInit.SIMPLE_CRAFTING_TABLE.get())
+                .pattern("ps")
+                .pattern("ss")
+                .define('p',Items.LEATHER)
+                .define('s',Items.STICK)
+                .unlockedBy("has_stick",has(Items.STICK))
                 .save(p_251297_);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC,ItemInit.BONFIRE_BLOCK_ITEM.get())

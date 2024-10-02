@@ -38,7 +38,9 @@ public class Config
             "ctl:pottery_pickaxe",
             "ctl:pottery_shovel",
             "ctl:pottery_sword",
-            "ctl:nugget_tin_and_copper"
+            "ctl:nugget_tin_and_copper",
+            "ctl:simply_flint_and_steel",
+            "ctl:bonfire"
     };
 
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder()
