@@ -10,7 +10,6 @@
     "recipeMixin"
   ],
   "client": [
-    "ctlMixin"
   ],
   "injectors": {
     "defaultRequire": 1

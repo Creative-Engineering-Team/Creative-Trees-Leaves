@@ -1,7 +1,8 @@
 package com.xiaoliua.ctl.Blocks;
 
+import com.xiaoliua.ctl.Items.nuggetTinAndCopper;
 import com.xiaoliua.ctl.Items.unassembledClayItems;
-import com.xiaoliua.ctl.ctl;
+import com.xiaoliua.ctl.Items.unfiredClayItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -223,18 +224,30 @@ public class bonfireBlock extends BaseEntityBlock {
             ItemStack itemStack = player.getMainHandItem();
             Optional<CampfireCookingRecipe> optional = bonfireblockentity.getCookableRecipe(itemStack);
             if (optional.isPresent()){
+                //ctl.LOGGER.debug(itemStack.getItem().toString());
+                //ctl.LOGGER.debug(ItemInit.UNASSEMBLED_POTTERY_AXE.get().toString());
+                if (itemStack.copy().getItem() instanceof unfiredClayItems){
+                    //ctl.LOGGER.debug("usbci");
+                    if (!level.isClientSide && bonfireblockentity.placeFood(player,player.getAbilities().instabuild ?
+                            itemStack.copy() : itemStack, level.random.nextInt(45,60)*20)){
+                        level.setBlock(pos,state.setValue(IGNITABLE,true),3);
+                        return InteractionResult.SUCCESS;
+                    }
+                }
+                if(itemStack.getItem() instanceof nuggetTinAndCopper){
+                    //ctl.LOGGER.debug("togri");
+                    if (!level.isClientSide && bonfireblockentity.placeFood(player,player.getAbilities().instabuild ?
+                            itemStack.copy() : itemStack, level.random.nextInt(60,70)*20)){
+                        level.setBlock(pos,state.setValue(IGNITABLE,true),3);
+                        return InteractionResult.SUCCESS;
+                    }
+                }
                 if (!level.isClientSide && bonfireblockentity.placeFood(player,player.getAbilities().instabuild ?
                         itemStack.copy() : itemStack,optional.get().getCookingTime())){
                     level.setBlock(pos,state.setValue(IGNITABLE,true),11);
                     return InteractionResult.SUCCESS;
                 }
                 return InteractionResult.CONSUME;
-            }else if (itemStack.getItem().asItem() instanceof unassembledClayItems){
-                if (!level.isClientSide && bonfireblockentity.placeFood(player,player.getAbilities().instabuild ?
-                        itemStack.copy() : itemStack, ctl.RANDOM.nextInt(45,60))){
-                    level.setBlock(pos,state.setValue(IGNITABLE,true),3);
-                    return InteractionResult.SUCCESS;
-                }
             }
             return InteractionResult.sidedSuccess(true);
         }
@@ -281,7 +294,7 @@ public class bonfireBlock extends BaseEntityBlock {
 
     @Override
     public void onRemove(BlockState p_60515_, Level p_60516_, BlockPos p_60517_, @NotNull BlockState p_60518_, boolean p_60519_) {
-        ctl.LOGGER.debug("{} {} {} {} {}", p_60515_, p_60516_, p_60517_, p_60518_, p_60519_);
+        //ctl.LOGGER.debug("{} {} {} {} {}", p_60515_, p_60516_, p_60517_, p_60518_, p_60519_);
         if (!p_60518_.is(BlockInit.BONFIRE_BLOCK.get())){
             bonfireBlockEntity bonfireBlockEntity = (com.xiaoliua.ctl.Blocks.bonfireBlockEntity) p_60516_.getBlockEntity(p_60517_);
             com.xiaoliua.ctl.Blocks.bonfireBlockEntity.out(p_60516_,p_60517_,p_60515_,bonfireBlockEntity);

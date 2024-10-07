@@ -1,8 +1,6 @@
 package com.xiaoliua.ctl.Items;
 
-import net.minecraft.world.item.Item;
-
-public class unfiredClayHoeItem extends Item {
+public class unfiredClayHoeItem extends unfiredClayItems {
     public unfiredClayHoeItem(Properties properties) {
         super(properties);
     }

@@ -1,8 +1,6 @@
 package com.xiaoliua.ctl.Items;
 
-import net.minecraft.world.item.Item;
-
-public class unfiredClayPickaxeItem extends Item {
+public class unfiredClayPickaxeItem extends unfiredClayItems {
     public unfiredClayPickaxeItem(Properties properties) {
         super(properties);
     }

@@ -187,6 +187,26 @@ public class ctlRecipeProvider extends RecipeProvider {
                 .unlockedBy("has_clay_ball",has(Items.CLAY_BALL))
                 .save(p_251297_);
 
+        SimpleCookingRecipeBuilder.campfireCooking(Ingredient.of(ItemInit.UNFIRED_CLAY_HOE.get()),RecipeCategory.MISC,
+                        ItemInit.UNASSEMBLED_POTTERY_HOE.get(), 0f,1200)
+                .unlockedBy("has_clay_ball",has(Items.CLAY_BALL))
+                .save(p_251297_);
+
+        SimpleCookingRecipeBuilder.campfireCooking(Ingredient.of(ItemInit.UNFIRED_CLAY_PICKAXE.get()),RecipeCategory.MISC,
+                        ItemInit.UNASSEMBLED_POTTERY_PICKAXE.get(), 0f,1200)
+                .unlockedBy("has_clay_ball",has(Items.CLAY_BALL))
+                .save(p_251297_);
+
+        SimpleCookingRecipeBuilder.campfireCooking(Ingredient.of(ItemInit.UNFIRED_CLAY_SHOVEL.get()),RecipeCategory.MISC,
+                        ItemInit.UNASSEMBLED_POTTERY_SHOVEL.get(), 0f,1200)
+                .unlockedBy("has_clay_ball",has(Items.CLAY_BALL))
+                .save(p_251297_);
+
+        SimpleCookingRecipeBuilder.campfireCooking(Ingredient.of(ItemInit.UNFIRED_CLAY_SWORD.get()),RecipeCategory.MISC,
+                        ItemInit.UNASSEMBLED_POTTERY_SWORD.get(), 0f,1200)
+                .unlockedBy("has_clay_ball",has(Items.CLAY_BALL))
+                .save(p_251297_);
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC,ItemInit.NUGGET_TIN_AND_COPPER.get())
                 .pattern("ccc")
                 .pattern("ctc")
@@ -197,7 +217,7 @@ public class ctlRecipeProvider extends RecipeProvider {
                 .save(p_251297_);
 
         SimpleCookingRecipeBuilder.campfireCooking(Ingredient.of(ItemInit.NUGGET_TIN_AND_COPPER.get()),RecipeCategory.MISC,
-                MekanismItems.BRONZE_INGOT, 0f,14000)
+                MekanismItems.BRONZE_INGOT, 0f,1400)
                 .unlockedBy("has_nugget_tin_and_copper",has(ItemInit.NUGGET_TIN_AND_COPPER.get()))
                 .save(p_251297_);
     }

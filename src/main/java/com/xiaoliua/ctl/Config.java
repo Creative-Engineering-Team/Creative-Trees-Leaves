@@ -40,7 +40,9 @@ public class Config
             "ctl:pottery_sword",
             "ctl:nugget_tin_and_copper",
             "ctl:simply_flint_and_steel",
-            "ctl:bonfire"
+            "ctl:bonfire",
+            "ctl:simple_crafting_table",
+            "minecraft:crafting_table"
     };
 
     private static final ForgeConfigSpec.Builder BUILDER = new ForgeConfigSpec.Builder()
@@ -98,7 +100,7 @@ public class Config
         allowWooden = ALLOW_WOODEN.get();
         String ops = logDirtBlock+" "+magicNumber+" "+magicNumberIntroduction+" "+waitTime+" "+
                 useMineAble+" "+allowWooden;
-        ctl.LOGGER.debug("Configs: {}", ops);
+        //ctl.LOGGER.debug("Configs: {}", ops);
         SCTItems = CAN_CRAFT_WITH_SIMPLE_CRAFTING_TABLE.get().stream()
                 .map(itemName -> BuiltInRegistries.ITEM.get(
                         new ResourceLocation(itemName)))

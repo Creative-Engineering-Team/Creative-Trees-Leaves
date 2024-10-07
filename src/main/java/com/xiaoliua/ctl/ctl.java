@@ -42,14 +42,12 @@ import org.slf4j.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.regex.Pattern;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(ctl.MODID)
 public class ctl
 {
-    public static final Random RANDOM = new Random();
     // Define mod id in a common place for everything to reference
     public static final String MODID = "ctl";
     // Directly reference a slf4j logger
@@ -227,7 +225,7 @@ public class ctl
                 //if (RANDOM.nextFloat() < 0.75){
                     ItemStack realDrop = new ItemStack(ItemInit.PLIABLE_BRANCH.get());
                     world.addFreshEntity(new ItemEntity(world,event.getPos().getX(),event.getPos().getY(),event.getPos().getZ(),realDrop));
-                    if (RANDOM.nextFloat() < 0.1){
+                    if (world.random.nextFloat() < 0.1){
                         world.addFreshEntity(new ItemEntity(world,event.getPos().getX(),event.getPos().getY(),event.getPos().getZ(),realDrop));
                     }
                 //}
